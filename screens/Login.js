@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const Login = ({ route, navigation }) => {
+const Login = ({ route, navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
@@ -12,6 +13,11 @@ const Login = ({ route, navigation }) => {
         justifyContent: "center",
         margin: "10%",
       }}>
+      <View style={{ alignItems: "flex-end" }}>
+        <TouchableOpacity onPress={() => goBack()}>
+          <MaterialCommunityIcons name='home' size={30} />
+        </TouchableOpacity>
+      </View>
       <View style={{ alignItems: "center" }}>
         <Text>Log In</Text>
       </View>

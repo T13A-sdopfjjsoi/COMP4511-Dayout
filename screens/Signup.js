@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const Signup = ({ route, navigation }) => {
+const Signup = ({ route, navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -14,6 +15,11 @@ const Signup = ({ route, navigation }) => {
         justifyContent: "center",
         margin: "10%",
       }}>
+      <View style={{ alignItems: "flex-end" }}>
+        <TouchableOpacity onPress={() => goBack()}>
+          <MaterialCommunityIcons name='home' size={30} />
+        </TouchableOpacity>
+      </View>
       <View style={{ alignItems: "center" }}>
         <Text>Create an Account</Text>
       </View>
@@ -60,9 +66,9 @@ const Signup = ({ route, navigation }) => {
         <Button
           mode='contained'
           onPress={() =>
-            navigation.navigate("Home", {
+            navigation.navigate("Interests", {
               method: "signup",
-              name: name,
+              username: name,
               email: email,
               password: password,
             })
