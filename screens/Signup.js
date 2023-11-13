@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import Back from "./Components/Back.js";
+
 
 const Signup = ({ route, navigation }) => {
   const [email, setEmail] = useState("");
@@ -14,6 +16,7 @@ const Signup = ({ route, navigation }) => {
         justifyContent: "center",
         margin: "10%",
       }}>
+      <Back />
       <View style={{ alignItems: "center" }}>
         <Text>Create an Account</Text>
       </View>
