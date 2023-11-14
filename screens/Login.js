@@ -67,6 +67,10 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
             Log In
           </Button>
         </View>
+
+      <View style={{ alignItems: "center" }}>
+        <Text>Log In</Text>
+      </View>
       </View>
     </LinearGradient>
   );

@@ -1,34 +1,50 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import UIStyles from "./styles.js";
+import DashGrid from "./Components/DashGrid.js";
 
 const Home = () => {
+  const user = false;
   const navigation = useNavigation();
+
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}>
-      <Text>Home</Text>
-      <Button
-        mode='contained'
-        title='Login'
-        onPress={() => {
-          navigation.navigate("Login");
-        }}>
-        Log in
-      </Button>
-      <Button
-        mode='contained'
-        title='Sign up'
-        onPress={() => {
-          navigation.navigate("Signup");
-        }}>
-        Sign up
-      </Button>
+    <View style={{ flex: 1 }}>
+      {!user ? (
+        <View style={UIStyles.header}>
+          <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome!</Text>
+          <View style={UIStyles.buttonContainer}>
+            <Button
+              mode='contained'
+              title='Login'
+              style={UIStyles.button}
+              onPress={() => {
+                navigation.navigate("Login");
+              }}>
+              Log in
+            </Button>
+            <Text style={UIStyles.titleText}>or  </Text>
+            <Button
+              mode='contained'
+              title='Sign up'
+              style={UIStyles.button}
+              onPress={() => {
+                navigation.navigate("Signup");
+              }}>
+              Sign up
+            </Button>
+          </View>
+        </View>
+      ) : (
+        <View style={UIStyles.header}>
+          <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome!</Text>
+          <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>User's name goes here!</Text>
+        </View>
+      )}
+      <View style={UIStyles.dashContent}>
+        <DashGrid />
+      </View>
     </View>
   );
 };
