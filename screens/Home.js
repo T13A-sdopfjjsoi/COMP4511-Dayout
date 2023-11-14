@@ -24,7 +24,7 @@ const Home = () => {
               }}>
               Log in
             </Button>
-            <Text style={UIStyles.titleText}>or</Text>
+            <Text style={UIStyles.titleText}>or  </Text>
             <Button
               mode='contained'
               title='Sign up'
@@ -39,26 +39,12 @@ const Home = () => {
       ) : (
         <View style={UIStyles.header}>
           <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome!</Text>
-          <View style={UIStyles.buttonContainer}>
-            <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>User's name goes here!</Text>
-            <Button
-              mode='contained'
-              title='Sign up'
-              style={UIStyles.button}
-              onPress={() => {
-                navigation.navigate("Signup");
-              }}>
-              Sign up
-            </Button>
-          </View>
+          <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>User's name goes here!</Text>
         </View>
       )}
-
-      <ScrollView>
-        <View style={UIStyles.dashContent}>
-          <DashGrid />
-        </View>
-      </ScrollView>
+      <View style={UIStyles.dashContent}>
+        <DashGrid />
+      </View>
     </View>
   );
 };

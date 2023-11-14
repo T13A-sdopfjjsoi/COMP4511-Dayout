@@ -1,25 +1,29 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 import { Button, Text } from 'react-native-paper';
 import UIStyles from '../styles';
 
 const DashGrid = () => {
+  const navigation = useNavigation();
+  const events = [1,2,3,4,5,6];
+  
   return (
     <ScrollView style={{ width: '100%', height:"100%", marginBottom: 10 }}>
       <Text>For you</Text>
       <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-        <Button mode="contained" style={UIStyles.scrollStackItem}>
-          Item 1
+        {events.map((event) => (
+        <Button
+          key={event}  // Don't forget to add a key when mapping over elements
+          mode='contained'
+          style={UIStyles.scrollStackItem}
+          onPress={() => {
+            navigation.navigate('Event', { eventId: event });
+          }}
+        >
+          Item {event}
         </Button>
-        <Button mode="contained" style={UIStyles.scrollStackItem}>
-          Item 2
-        </Button>
-        <Button mode="contained" style={UIStyles.scrollStackItem}>
-          Item 3
-        </Button>
-        <Button mode="contained" style={UIStyles.scrollStackItem}>
-          Item 4
-        </Button>
+      ))}
       </ScrollView>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginRight: 10 }}>
         <View style={{width:"48%", alignItems:"center"}}>
