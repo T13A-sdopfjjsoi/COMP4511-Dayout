@@ -8,17 +8,23 @@ import { useRoute } from '@react-navigation/native';
 const Search = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const routeFilters = route.params?.filters
+  const routeSearch = route.params?.search
 
-  const [searchQuery, setSearchQuery] = useState(route.params?.searchQuery ? route.params?.searchQuery : '');
+
+  const [searchQuery, setSearchQuery] = useState('');
   const events = ["1","2","3","4","5","15"];
   const [showEvents, setShowEvents] = useState(events);
-  const [filters, setFilters] = useState(route.params?.filters ? (route.params.filters) : ({}));
-  console.log((route.params?.filters ? (route.params.filters) : ({})))
+  const [filters, setFilters] = useState({});
 
+  useEffect(() => {  
+    setFilters(routeFilters ? (routeFilters) : ({}))
+    onChangeSearch(routeSearch ? (routeSearch) : (''))
+  },[routeFilters, routeSearch])
 
   const [period, setPeriod] = useState("All time")
 
-  const filterCount = (filters.categories ? (999) : (0))
+  const filterCount = (filters.categories ? (filters.categories.length) : (0))
 
   const onChangeSearch = (query) => {
     setSearchQuery(query),

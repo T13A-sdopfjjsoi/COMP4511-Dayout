@@ -8,6 +8,10 @@ const UIStyles = {
     fontSize: 30,
     color: 'white',
   },
+  blackTitleText: {
+    fontSize: 30,
+    color: 'black',
+  },
   header: {
     paddingTop: 60,
     padding: 20,
