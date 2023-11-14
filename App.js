@@ -7,6 +7,7 @@ import LoginScreen from "./screens/Login";
 import SignupScreen from "./screens/Signup";
 import EventScreen from "./screens/Event";
 import EventCreateScreen from "./screens/EventCreate";
+import FiltersScreen from "./screens/Filters";
 
 const RootStack = createNativeStackNavigator();
 
@@ -37,6 +38,11 @@ export default function App() {
         <RootStack.Screen
           name='EventCreate'
           component={EventCreateScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='Filters'
+          component={FiltersScreen}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>
