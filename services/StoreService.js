@@ -3,10 +3,50 @@ import { v4 as uuidv4 } from 'uuid';
 
 const USERS_STORE_KEY = "@users";
 const EVENTS_STORE_KEY = "@events";
-const GROUPS_STORE_KEY = "@groups";
+const ACTIVE_USER_KEY = "@active";
 
 export default {
   // Gets user with a certain username
+  async assignActive(username) {
+    try {
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY)
+      const storedUsers = (asyncUsers) ? JSON.parse(asyncUsers) : [];
+      const index = storedUsers.findIndex((user) => user.username === username)
+      
+      if (index === -1 ){
+        return null
+      }
+
+      await AsyncStorage.setItem(ACTIVE_USER_KEY,JSON.stringify(storedUsers[index]));
+
+      return storedUsers[index];
+
+    } catch (error) {
+      console.log("Failed to assign user", error);
+    }
+  },
+
+  async getActive() {
+    try {
+      const asyncUser = await AsyncStorage.getItem(ACTIVE_USER_KEY)
+      const storedUser = (asyncUser) ? JSON.parse(asyncUser) : {};
+
+      return storedUser;
+
+    } catch (error) {
+      console.log("Failed to get active user", error);
+    }
+  },
+
+  async removeActive() {
+    try {
+      await AsyncStorage.setItem(ACTIVE_USER_KEY,JSON.stringify({}));
+
+    } catch (error) {
+      console.log("Failed to remove active user", error);
+    }
+  },
+
   async getUser(username) {
     try {
       const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY)
