@@ -1,10 +1,37 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
+import { Searchbar, Avatar, Button, Card, Title, Paragraph, IconButton  } from 'react-native-paper';
+import UIStyles from "./styles";
 
 const Search = () => {
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const onChangeSearch = query => setSearchQuery(query);
+  const events = [1,2,3,4,5,6];
+
   return (
     <View>
-      <Text>Search</Text>
+    <Searchbar
+      style={{margin:20}}
+      placeholder="Search"
+      onChangeText={onChangeSearch}
+      value={searchQuery}
+    />
+      <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 20}}>
+        <Text>{searchQuery}</Text>
+        {events.map((event) => (
+          <Card key={event} style={UIStyles.searchCard}>
+            <Card.Content>
+              <Title>Event title here = {event}</Title>
+              <Paragraph>lorem ipsum and shit lorem ipsum and shit lorem ipsum and shit lorem ipsum and shit lorem ipsum and shit</Paragraph>
+            </Card.Content>
+            {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
+            <Card.Actions>
+              <IconButton icon="bookmark">Cancel</IconButton>
+            </Card.Actions>
+          </Card>
+      ))}
+      </ScrollView>
     </View>
   );
 };

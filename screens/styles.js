@@ -33,6 +33,11 @@ const UIStyles = {
   stack: { 
     aspectRatio: 1, 
     width:"100%",
+  },
+  searchCard: {
+    width:"100%",
+    height:180,
+    marginBottom: 5
   }
 };
 

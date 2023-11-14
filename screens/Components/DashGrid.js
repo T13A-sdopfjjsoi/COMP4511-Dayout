@@ -14,7 +14,7 @@ const DashGrid = () => {
       <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
         {events.map((event) => (
         <Button
-          key={event}  // Don't forget to add a key when mapping over elements
+          key={event} 
           mode='contained'
           style={UIStyles.scrollStackItem}
           onPress={() => {
