@@ -13,15 +13,26 @@ const Search = () => {
 
 
   const [searchQuery, setSearchQuery] = useState('');
-  const events = ["1","2","3","4","5","15"];
+  const events = ["1","2","3","4","5","15","1155325"];
   const [showEvents, setShowEvents] = useState(events);
   const [filters, setFilters] = useState({});
 
   useEffect(() => {  
     setFilters(routeFilters ? (routeFilters) : ({}))
-    console.log(routeFilters)
     onChangeSearch(routeSearch ? (routeSearch) : (''))
   },[routeFilters, routeSearch])
+
+  const checkFilters = (event) => {
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) {
+
+      } else {
+        return false
+      }
+    })
+
+    return true
+  }
 
   const [period, setPeriod] = useState("All time")
 
@@ -58,7 +69,7 @@ const Search = () => {
       <Text>Showing {period}</Text>
     </View>
 
-      <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20, paddingBottom: 10}}>
+      <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20, marginBottom: 50}}>
         {showEvents.map((event) => (
           <Card key={event} style={UIStyles.searchCard} 
           onPress={() => navigation.navigate('Event', { eventId: event })}>
@@ -68,10 +79,14 @@ const Search = () => {
             </Card.Content>
             {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
             <Card.Actions>
-              <IconButton icon="bookmark">Cancel</IconButton>
+              <IconButton icon="bookmark" onPress={() => console.log("Save " + event)}>Cancel</IconButton>
             </Card.Actions>
           </Card>
       ))}
+
+      <View style={{ marginTop:100, flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Nothing more to show!</Text>
+      </View>
       </ScrollView>
     </View>
   );
