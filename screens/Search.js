@@ -19,12 +19,21 @@ const Search = () => {
 
   useEffect(() => {  
     setFilters(routeFilters ? (routeFilters) : ({}))
+    console.log(routeFilters)
     onChangeSearch(routeSearch ? (routeSearch) : (''))
   },[routeFilters, routeSearch])
 
   const [period, setPeriod] = useState("All time")
 
-  const filterCount = (filters.categories ? (filters.categories.length) : (0))
+  const filterCount = () => {
+    let count = 0
+    filters['categories'] && (
+      Object.keys(filters['categories']).map((key) => {
+        count = count + filters['categories'][key].length
+      })
+    )
+    return count;
+  }
 
   const onChangeSearch = (query) => {
     setSearchQuery(query),
@@ -44,7 +53,7 @@ const Search = () => {
         <Button style={{width:100, marginRight:5}} buttonColor="purple" textColor="white"
           onPress={() => navigation.navigate('Filters', { filters: filters })}
         >Fitlers</Button>
-        <Text>{filterCount} filters</Text>
+        <Text>{filterCount()} filters</Text>
       </View>
       <Text>Showing {period}</Text>
     </View>
