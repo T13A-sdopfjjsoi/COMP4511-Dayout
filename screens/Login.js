@@ -13,12 +13,15 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
 
   const LoginSubmit = async () => {
     const ExistUser = await StoreService.getUser(email);
-    if (ExistUser) {
-      navigation.navigate("Home", {
-        method: "login",
-        email: email,
-        password: password,
-      });
+    if (ExistUser.password === password) {
+      const LoggedUser = await StoreService.assignActive(email);
+      if (ExistUser && LoggedUser) {
+        navigation.navigate("Home", {
+          method: "login",
+          email: email,
+          password: password,
+        });
+      }
     }
   };
 

@@ -7,11 +7,11 @@ const ACTIVE_USER_KEY = "@active";
 
 export default {
   // Gets user with a certain username
-  async assignActive(username) {
+  async assignActive(email) {
     try {
       const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
       const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
-      const index = storedUsers.findIndex((user) => user.username === username);
+      const index = storedUsers.findIndex((user) => user.email === email);
 
       if (index === -1) {
         return null;
