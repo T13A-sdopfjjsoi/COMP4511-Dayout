@@ -1,8 +1,23 @@
 {
-  "Sport": ["Soccer", "Tennis"],
-  "Hobby": [],
-  "Arts & Culture": [],
-  "Social": ["Meet up", "other thing"],
-  "Education": [],
-  "Lifestyle": []
+  "Sport": [
+    "Soccer",
+    "Tennis",
+    "Cricket",
+    "Cycling",
+    "Running",
+    "Swimming",
+    "Basketball",
+    "Baseball",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Rugby",
+    "Volleyball",
+    "Other"
+  ],
+  "Hobby": ["Photography", "Cooking", "Dancing", "Music", "Gaming", "Other"],
+  "Arts & Culture": ["Art", "Theatre", "Museum", "Other"],
+  "Social": ["Meet up", "Party", "Other"],
+  "Education": ["School", "University", "Other"],
+  "Lifestyle": ["Food", "Travel", "Other"]
 }
