@@ -3,11 +3,34 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import StoreService from "../services/StoreService";
 
 const Signup = ({ route, navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+
+  const SignUpSubmit = async () => {
+    const ExistUser = await StoreService.getUser(email);
+    if (ExistUser === null) {
+      console.log("pass");
+
+      const AddUserStatus = await StoreService.addUser({
+        username: name,
+        email: email,
+        password: password,
+        interest: [],
+      });
+      if (AddUserStatus) {
+        navigation.navigate("Interests", {
+          method: "signup",
+          username: name,
+          email: email,
+          password: password,
+        });
+      }
+    }
+  };
 
   return (
     <LinearGradient
@@ -69,16 +92,7 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
           />
         </View>
         <View>
-          <Button
-            mode='contained'
-            onPress={() =>
-              navigation.navigate("Interests", {
-                method: "signup",
-                username: name,
-                email: email,
-                password: password,
-              })
-            }>
+          <Button mode='contained' onPress={() => SignUpSubmit()}>
             Sign up
           </Button>
         </View>
