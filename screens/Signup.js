@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { View, TouchableOpacity } from "react-native";
+import { Button, Text, TextInput } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import StoreService from "../services/StoreService";
+import WelcomeBackground from "./Components/WelcomeBackground";
 
 const Signup = ({ route, navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
@@ -33,15 +34,10 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
   };
 
   return (
-    <LinearGradient
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      colors={["#9B57D0", "#9D76BB"]}
-      style={{ flex: 1 }}>
+    <WelcomeBackground>
       <View
         style={{
-          flex: 1,
-          justifyContent: "center",
+          height: "100%",
           margin: "10%",
         }}>
         <View style={{ alignItems: "flex-end" }}>
@@ -49,55 +45,71 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
             <MaterialCommunityIcons name='home' size={30} />
           </TouchableOpacity>
         </View>
-        <View style={{ alignItems: "center" }}>
-          <Text>Create an Account</Text>
-        </View>
-        <View>
-          <TextInput
-            theme={{ roundness: 25 }}
-            style={{
-              overflow: "hidden",
-              borderStyle: "solid",
-              borderColor: "black",
-              borderRadius: 25,
-            }}
-            label='Name'
-            value={name}
-            onChangeText={(name) => setName(name)}
-          />
-          <TextInput
-            theme={{ roundness: 25 }}
-            style={{
-              overflow: "hidden",
-              borderStyle: "solid",
-              borderColor: "black",
-              borderRadius: 25,
-            }}
-            label='Email'
-            value={email}
-            onChangeText={(email) => setEmail(email)}
-          />
-          <TextInput
-            theme={{ roundness: 25 }}
-            style={{
-              overflow: "hidden",
-              borderStyle: "solid",
-              borderColor: "black",
-              borderRadius: 25,
-            }}
-            label='Password'
-            value={password}
-            onChangeText={(password) => setPassword(password)}
-            secureTextEntry={true}
-          />
-        </View>
-        <View>
-          <Button mode='contained' onPress={() => SignUpSubmit()}>
-            Sign up
-          </Button>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+          }}>
+          <View style={{ alignItems: "center" }}>
+            <Text
+              variant='displaySmall'
+              style={{ color: "white", fontWeight: "bold" }}>
+              Create Account
+            </Text>
+          </View>
+          <View style={{ margin: "5%" }}>
+            <View style={{ marginBottom: 20 }}>
+              <TextInput
+                theme={{ roundness: 25 }}
+                style={{
+                  overflow: "hidden",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  borderRadius: 25,
+                }}
+                label='Name'
+                value={name}
+                onChangeText={(name) => setName(name)}
+              />
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <TextInput
+                theme={{ roundness: 25 }}
+                style={{
+                  overflow: "hidden",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  borderRadius: 25,
+                }}
+                label='Email'
+                value={email}
+                onChangeText={(email) => setEmail(email)}
+              />
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <TextInput
+                theme={{ roundness: 25 }}
+                style={{
+                  overflow: "hidden",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  borderRadius: 25,
+                }}
+                label='Password'
+                value={password}
+                onChangeText={(password) => setPassword(password)}
+                secureTextEntry={true}
+              />
+            </View>
+            <View>
+              <Button mode='contained' onPress={() => SignUpSubmit()}>
+                Sign up
+              </Button>
+            </View>
+          </View>
         </View>
       </View>
-    </LinearGradient>
+    </WelcomeBackground>
   );
 };
 

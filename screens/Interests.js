@@ -1,31 +1,23 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   Touchable,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { Button, Checkbox } from "react-native-paper";
+import { Button, Checkbox, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StoreService from "../services/StoreService";
 import { Collapsible } from "react-native-fast-collapsible";
 import { LinearGradient } from "expo-linear-gradient";
 import EventTypes from "../data/EventType.json";
-
-// const EventTypes = ["Sport", "Sports", "Sportss"];
-// const EventTypes = {
-//   Sport: ["Soccer", "Tennis"],
-//   Social: ["Meet up", "other thing"],
-// };
+import WelcomeBackground from "./Components/WelcomeBackground";
 
 const Interests = ({ route, navigation }) => {
   let globalSportIdCounter = 1; // Initialize a global counter for all types
   let globalCheckboxIdCounter = 0;
-  // const [sportlist, setSportlist] = useState(
-  //   EventTypes.map((event, idx) => ({ id: idx, title: event, checked: false }))
-  // );
+  const { method, username, email, password } = route.params ?? {};
   const [checkboxes, setCheckboxes] = useState(
     [].concat(
       ...Object.keys(EventTypes).map((label) =>
@@ -37,29 +29,6 @@ const Interests = ({ route, navigation }) => {
       )
     )
   );
-  const { method, username, email, password } = route.params ?? {};
-
-  // useEffect(() => {
-  //   console.log("End of Signup");
-  //   if (method === "signup" && username && email && password) {
-  //     setUser({
-  //       username: username,
-  //       email: email,
-  //       password: password,
-  //       interest: [],
-  //     });
-  //     addUser(user);
-  //     // assignActiveU;
-  //   }
-
-  //   console.log(checkboxes);
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("Saving user");
-  //   updateUser(username, { username, email, password, interest: [] });
-  // }, [user]);
-
   const [isVisible, setVisibility] = useState(false);
 
   const toggleVisibility = () => {
@@ -98,11 +67,7 @@ const Interests = ({ route, navigation }) => {
   };
 
   return (
-    <LinearGradient
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      colors={["#9B57D0", "#9D76BB"]}
-      style={{ flex: 1 }}>
+    <WelcomeBackground>
       <View
         style={{
           margin: "10%",
@@ -117,49 +82,28 @@ const Interests = ({ route, navigation }) => {
         <View
           style={{
             flex: 8,
-            // alignItems: "center",
-            // justifyContent: "center",
             backgroundColor: "yellow",
           }}>
           <View style={{ alignItems: "center" }}>
-            <Text>Your Interest</Text>
+            <Text
+              variant='displaySmall'
+              style={{ color: "white", fontWeight: "bold" }}>
+              Your Interest
+            </Text>
           </View>
           <ScrollView>
-            {/* {Object.keys(EventTypes).map((label, idx) => (
-              <View style={{ backgroundColor: "#4287f5" }} key={idx}>
-                <TouchableOpacity onPress={toggleVisibility}>
-                  <Text>{label}</Text>
-                </TouchableOpacity>
-                {EventTypes[label]?.map((category, categoryIdx) => (
-                  const checkboxID = globalCheckboxIdCounter++;
-
-                  <Collapsible
-                    isVisible={isVisible}
-                    key={`${idx}-${categoryIdx}`}>
-                    <View
-                      style={{
-                        alignItems: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                      key={category}>
-                      <Text>{category}</Text>
-                      <Checkbox
-                        key={globalCheckboxIdCounter++}
-                        status={checked ? "checked" : "unchecked"}
-                        onPress={() => {
-                          toggleCheckbox(globalCheckboxIdCounter);
-                        }}
-                      />
-                    </View>
-                  </Collapsible>
-                ))}
-              </View>
-            ))} */}
             {Object.keys(EventTypes).map((label, idx) => (
               <View style={{ backgroundColor: "#4287f5" }} key={idx}>
                 <TouchableOpacity onPress={toggleVisibility}>
-                  <Text>{label}</Text>
+                  <Text
+                    variant='titleLarge'
+                    style={{
+                      color: "white",
+                      fontWeight: "bold",
+                      margin: "5%",
+                    }}>
+                    {label}
+                  </Text>
                 </TouchableOpacity>
                 {EventTypes[label]?.map((category, categoryIdx) => {
                   const checkboxId = globalCheckboxIdCounter++;
@@ -172,8 +116,13 @@ const Interests = ({ route, navigation }) => {
                           alignItems: "center",
                           flexDirection: "row",
                           justifyContent: "space-between",
+                          padding: "5%",
                         }}>
-                        <Text>{category}</Text>
+                        <Text
+                          variant='titleMedium'
+                          style={{ color: "white", fontWeight: "bold" }}>
+                          {category}
+                        </Text>
                         <Checkbox
                           key={checkboxId}
                           status={
@@ -191,193 +140,6 @@ const Interests = ({ route, navigation }) => {
                 })}
               </View>
             ))}
-            {/* <TouchableOpacity onPress={toggleVisibility}>
-              <Text>Expand / Collapse</Text>
-            </TouchableOpacity> */}
-
-            {/* <Collapsible isVisible={isVisible}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-            </Collapsible>
-            <TouchableOpacity onPress={toggleVisibility}>
-              <Text>Expand / Collapse</Text>
-            </TouchableOpacity>
-
-            <Collapsible isVisible={isVisible}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "red",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <Text>Type</Text>
-                <Checkbox
-                  status={checked ? "checked" : "unchecked"}
-                  onPress={() => {
-                    setChecked(!checked);
-                  }}
-                />
-              </View>
-            </Collapsible>
-            <TouchableOpacity onPress={toggleVisibility}>
-              <Text>Expand / Collapse</Text>
-            </TouchableOpacity>
-
-            <Collapsible isVisible={isVisible}>
-              {EventTypes.map((type, idx) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "red",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}>
-                  <Text>{type}</Text>
-                  <Checkbox
-                    key={type.id}
-                    checked={type.checked}
-                    status={type.checked ? "checked" : "unchecked"}
-                    onPress={() => {
-                      setChecked(!checked);
-                    }}
-                  />
-                </View>
-              ))}
-            </Collapsible> */}
           </ScrollView>
         </View>
         <View style={{ flex: 1 }}>
@@ -386,7 +148,7 @@ const Interests = ({ route, navigation }) => {
           </Button>
         </View>
       </View>
-    </LinearGradient>
+    </WelcomeBackground>
   );
 };
 

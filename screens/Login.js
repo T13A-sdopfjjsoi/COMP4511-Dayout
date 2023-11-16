@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { View, TouchableOpacity } from "react-native";
+import { Button, Text, TextInput } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import StoreService from "../services/StoreService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import WelcomeBackground from "./Components/WelcomeBackground";
 
 const Login = ({ route, navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
@@ -27,16 +28,9 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
   };
 
   return (
-    <LinearGradient
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      colors={["#9B57D0", "#9D76BB"]}
-      style={{ flex: 1 }}>
+    <WelcomeBackground>
       <View
         style={{
-          // flex: 1,
-          // justifyContent: "center",
-          // backgroundColor: "blue",
           height: "100%",
           margin: "10%",
         }}>
@@ -54,8 +48,12 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
             justifyContent: "center",
             // backgroundColor: "green",
           }}>
-          <View style={{ alignItems: "center" }}>
-            <Text>Log In</Text>
+          <View style={{ alignItems: "center", margin: "10%" }}>
+            <Text
+              variant='displaySmall'
+              style={{ color: "white", fontWeight: "bold" }}>
+              Log In
+            </Text>
           </View>
           <View
             style={{
@@ -99,7 +97,7 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
           </View>
         </View>
       </View>
-    </LinearGradient>
+    </WelcomeBackground>
   );
 };
 
