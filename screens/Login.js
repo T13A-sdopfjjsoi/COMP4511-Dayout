@@ -1,63 +1,106 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import Back from "./Components/Back.js";
+import { View, TouchableOpacity } from "react-native";
+import { Button, Text, TextInput } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import StoreService from "../services/StoreService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import WelcomeBackground from "./Components/WelcomeBackground";
 
-const Login = ({ route, navigation }) => {
+const Login = ({ route, navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const LoginSubmit = async () => {
+    const ExistUser = await StoreService.getUser(email);
+    if (ExistUser.password === password) {
+      const LoggedUser = await StoreService.assignActive(email);
+      if (ExistUser && LoggedUser) {
+        navigation.navigate("Home", {
+          method: "login",
+          email: email,
+          password: password,
+        });
+      }
+    }
+  };
+
+  const clearAsyncStorage = async () => {
+    AsyncStorage.clear();
+    console.log("Clear Storage");
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        margin: "10%",
-      }}>
-      <Back />
-      <View style={{ alignItems: "center" }}>
-        <Text>Log In</Text>
-      </View>
-      <View>
-        <TextInput
-          theme={{ roundness: 25 }}
+    <WelcomeBackground>
+      <View
+        style={{
+          height: "100%",
+          margin: "10%",
+        }}>
+        <View style={{ alignItems: "flex-end" }}>
+          <TouchableOpacity onPress={() => goBack()}>
+            <MaterialCommunityIcons name='home' size={30} />
+          </TouchableOpacity>
+          <Button onPress={() => clearAsyncStorage()}>
+            <Text>Clear Async Storage</Text>
+          </Button>
+        </View>
+        <View
           style={{
-            overflow: "hidden",
-            borderStyle: "solid",
-            borderColor: "black",
-            borderRadius: 25,
-          }}
-          label='Email'
-          value={email}
-          onChangeText={(email) => setEmail(email)}
-        />
-        <TextInput
-          theme={{ roundness: 25 }}
-          style={{
-            overflow: "hidden",
-            borderStyle: "solid",
-            borderColor: "black",
-            borderRadius: 25,
-          }}
-          label='Password'
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-          secureTextEntry={true}
-        />
+            flex: 1,
+            justifyContent: "center",
+            // backgroundColor: "green",
+          }}>
+          <View style={{ alignItems: "center", margin: "10%" }}>
+            <Text
+              variant='displaySmall'
+              style={{ color: "white", fontWeight: "bold" }}>
+              Log In
+            </Text>
+          </View>
+          <View
+            style={{
+              // backgroundColor: "yellow",
+              justifyContent: "center",
+            }}>
+            <View style={{ marginBottom: 20 }}>
+              <TextInput
+                theme={{ roundness: 25 }}
+                style={{
+                  overflow: "hidden",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  borderRadius: 25,
+                }}
+                label='Email'
+                value={email}
+                onChangeText={(email) => setEmail(email)}
+              />
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <TextInput
+                theme={{ roundness: 25 }}
+                style={{
+                  overflow: "hidden",
+                  borderStyle: "solid",
+                  borderColor: "black",
+                  borderRadius: 25,
+                }}
+                label='Password'
+                value={password}
+                onChangeText={(password) => setPassword(password)}
+                secureTextEntry={true}
+              />
+            </View>
+            <View>
+              <Button mode='contained' onPress={() => LoginSubmit()}>
+                Log In
+              </Button>
+            </View>
+          </View>
+        </View>
       </View>
-      <View>
-        <Button
-          mode='contained'
-          onPress={() =>
-            navigation.navigate("Home", {
-              method: "login",
-              email: email,
-              password: password,
-            })
-          }>
-          Log In
-        </Button>
-      </View>
-    </View>
+    </WelcomeBackground>
   );
 };
 

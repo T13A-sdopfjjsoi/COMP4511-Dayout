@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const USERS_STORE_KEY = "@users";
 const EVENTS_STORE_KEY = "@events";
@@ -7,20 +7,22 @@ const ACTIVE_USER_KEY = "@active";
 
 export default {
   // Gets user with a certain username
-  async assignActive(username) {
+  async assignActive(email) {
     try {
-      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY)
-      const storedUsers = (asyncUsers) ? JSON.parse(asyncUsers) : [];
-      const index = storedUsers.findIndex((user) => user.username === username)
-      
-      if (index === -1 ){
-        return null
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
+      const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
+      const index = storedUsers.findIndex((user) => user.email === email);
+
+      if (index === -1) {
+        return null;
       }
 
-      await AsyncStorage.setItem(ACTIVE_USER_KEY,JSON.stringify(storedUsers[index]));
+      await AsyncStorage.setItem(
+        ACTIVE_USER_KEY,
+        JSON.stringify(storedUsers[index])
+      );
 
       return storedUsers[index];
-
     } catch (error) {
       console.log("Failed to assign user", error);
     }
@@ -28,11 +30,10 @@ export default {
 
   async getActive() {
     try {
-      const asyncUser = await AsyncStorage.getItem(ACTIVE_USER_KEY)
-      const storedUser = (asyncUser) ? JSON.parse(asyncUser) : {};
+      const asyncUser = await AsyncStorage.getItem(ACTIVE_USER_KEY);
+      const storedUser = asyncUser ? JSON.parse(asyncUser) : {};
 
       return storedUser;
-
     } catch (error) {
       console.log("Failed to get active user", error);
     }
@@ -40,43 +41,48 @@ export default {
 
   async removeActive() {
     try {
-      await AsyncStorage.setItem(ACTIVE_USER_KEY,JSON.stringify({}));
-
+      await AsyncStorage.setItem(ACTIVE_USER_KEY, JSON.stringify({}));
     } catch (error) {
       console.log("Failed to remove active user", error);
     }
   },
 
-  async getUser(username) {
+  async getUser(email) {
     try {
-      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY)
-      const storedUsers = (asyncUsers) ? JSON.parse(asyncUsers) : [];
-      const index = storedUsers.findIndex((user) => user.username === username)
-      
-      if (index === -1 ){
-        return null
+      console.log("getting user");
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
+      const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
+      console.log(storedUsers);
+      console.log(email);
+      const index = storedUsers.findIndex((user) => user.email === email);
+
+      if (index === -1) {
+        console.log("Can't find user");
+        return null;
       }
 
       return storedUsers[index];
-
     } catch (error) {
       console.log("Failed to get user", error);
     }
   },
-  
+
   // Updates user with a given username
   async updateUser(username, user) {
     try {
-      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY)
-      const storedUsers = (asyncUsers) ? JSON.parse(asyncUsers) : [];
-      const index = storedUsers.findIndex((user) => user.username === username)
-      
-      if (index === -1 ){
-        return null
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
+      const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
+      const index = storedUsers.findIndex((user) => user.username === username);
+      console.log("All users", storedUsers);
+      console.log("user to update", username, user);
+      console.log("index", index);
+      if (index === -1) {
+        return false;
       }
-
-      storedUsers[index] = user
-      await AsyncStorage.setItem(USERS_STORE_KEY,JSON.stringify(storedUsers));
+      console.log("update user", user);
+      storedUsers[index] = user;
+      await AsyncStorage.setItem(USERS_STORE_KEY, JSON.stringify(storedUsers));
+      return true;
     } catch (error) {
       console.log("Failed to update user", error);
     }
@@ -85,18 +91,22 @@ export default {
   // Adds User, checks whether username is unique
   async addUser(user) {
     try {
-      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY)
-      const storedUsers = (asyncUsers) ? JSON.parse(asyncUsers) : [];
-      const username = user.username
-      const index = storedUsers.findIndex((user) => user.username === username)
-      
-      if (index !== -1 ){
+      console.log("New user", user);
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
+      const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
+      const username = user.username;
+      const index = storedUsers.findIndex((user) => user.username === username);
+      console.log("All users", storedUsers);
+      console.log("index", index);
+      if (index > 0) {
         // Username already taken
-        return null
+        return false;
       }
 
-      storedUsers.push(user)
-      await AsyncStorage.setItem(USERS_STORE_KEY,JSON.stringify(storedUsers));
+      storedUsers.push(user);
+      console.log("New users", storedUsers);
+      await AsyncStorage.setItem(USERS_STORE_KEY, JSON.stringify(storedUsers));
+      return true;
     } catch (error) {
       console.log("Failed to add user", error);
     }
@@ -105,34 +115,36 @@ export default {
   // Gets event by id
   async getEvent(id) {
     try {
-      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY)
-      const storedEvents = (asyncEvents) ? JSON.parse(asyncEvents) : [];
-      const index = storedEvents.findIndex((event) => event.id === id)
-      
-      if (index === -1 ){
-        return null
+      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY);
+      const storedEvents = asyncEvents ? JSON.parse(asyncEvents) : [];
+      const index = storedEvents.findIndex((event) => event.id === id);
+
+      if (index === -1) {
+        return null;
       }
 
       return storedEvents[index];
-
     } catch (error) {
       console.log("Failed to get event", error);
     }
   },
-  
+
   // Updates event with id
   async updateEvent(id, event) {
     try {
-      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY)
-      const storedEvents = (asyncEvents) ? JSON.parse(asyncEvents) : [];
-      const index = storedEvents.findIndex((event) => event.id === id)
-      
-      if (index === -1 ){
-        return null
+      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY);
+      const storedEvents = asyncEvents ? JSON.parse(asyncEvents) : [];
+      const index = storedEvents.findIndex((event) => event.id === id);
+
+      if (index === -1) {
+        return null;
       }
 
-      storedEvents[index] = event
-      await AsyncStorage.setItem(EVENTS_STORE_KEY,JSON.stringify(storedEvents));
+      storedEvents[index] = event;
+      await AsyncStorage.setItem(
+        EVENTS_STORE_KEY,
+        JSON.stringify(storedEvents)
+      );
     } catch (error) {
       console.log("Failed to update event", error);
     }
@@ -141,15 +153,18 @@ export default {
   // Adds event and returns id
   async addEvent(event) {
     try {
-      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY)
-      const storedEvents = (asyncEvents) ? JSON.parse(asyncEvents) : [];
+      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY);
+      const storedEvents = asyncEvents ? JSON.parse(asyncEvents) : [];
       const eventId = uuidv4();
       event.id = eventId;
-      
-      storedEvents.push(event)
 
-      await AsyncStorage.setItem(EVENTS_STORE_KEY,JSON.stringify(storedEvents));
-      return eventId
+      storedEvents.push(event);
+
+      await AsyncStorage.setItem(
+        EVENTS_STORE_KEY,
+        JSON.stringify(storedEvents)
+      );
+      return eventId;
     } catch (error) {
       console.log("Failed to add event", error);
     }
@@ -158,14 +173,15 @@ export default {
   // Returns events created by user
   async getUsersEvents(username) {
     try {
-      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY)
-      const storedEvents = (asyncEvents) ? JSON.parse(asyncEvents) : [];
+      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY);
+      const storedEvents = asyncEvents ? JSON.parse(asyncEvents) : [];
 
-      const userEvents = storedEvents.filter((event) => event.creator === username);
+      const userEvents = storedEvents.filter(
+        (event) => event.creator === username
+      );
       return userEvents;
-
     } catch (error) {
       console.log("Failed to find user's events", error);
     }
   },
-}
+};

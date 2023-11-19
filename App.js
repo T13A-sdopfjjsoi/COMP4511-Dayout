@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainScreen from "./screens/Main";
 import LoginScreen from "./screens/Login";
 import SignupScreen from "./screens/Signup";
+import InterestsScreen from "./screens/Interests";
 import EventScreen from "./screens/Event";
 import EventCreateScreen from "./screens/EventCreate";
 import FiltersScreen from "./screens/Filters";
@@ -28,6 +29,11 @@ export default function App() {
         <RootStack.Screen
           name='Signup'
           component={SignupScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='Interests'
+          component={InterestsScreen}
           options={{ headerShown: false }}
         />
         <RootStack.Screen
