@@ -13,11 +13,15 @@ import { Collapsible } from "react-native-fast-collapsible";
 import { LinearGradient } from "expo-linear-gradient";
 import EventTypes from "../data/EventType.json";
 import WelcomeBackground from "./Components/WelcomeBackground";
+import { AntDesign } from "@expo/vector-icons";
 
 const Interests = ({ route, navigation }) => {
   let globalSportIdCounter = 1; // Initialize a global counter for all types
   let globalCheckboxIdCounter = 0;
+  let globalCollapsibleIdCounter = 1;
+
   const { method, username, email, password } = route.params ?? {};
+
   const [checkboxes, setCheckboxes] = useState(
     [].concat(
       ...Object.keys(EventTypes).map((label) =>
@@ -29,10 +33,32 @@ const Interests = ({ route, navigation }) => {
       )
     )
   );
-  const [isVisible, setVisibility] = useState(false);
 
-  const toggleVisibility = () => {
-    setVisibility((previous) => !previous);
+  const toggleCheckbox = (id) => {
+    const checkboxData = [...checkboxes];
+    console.log(id);
+    console.log(checkboxData[id]);
+    checkboxData[id].checked = !checkboxData[id].checked;
+    console.log(checkboxData[id]);
+    setCheckboxes(checkboxData);
+  };
+
+  const [collapsibles, setCollapsibles] = useState(
+    Object.keys(EventTypes).map((label) => ({
+      id: globalCollapsibleIdCounter++,
+      label,
+      visible: false,
+    }))
+  );
+
+  const toggleVisibility = (collapsibleId) => {
+    setCollapsibles((prevCollapsibles) =>
+      prevCollapsibles.map((collapsible) => ({
+        ...collapsible,
+        visible:
+          collapsible.id === collapsibleId ? !collapsible.visible : false,
+      }))
+    );
   };
 
   const FindAllInterests = () => {
@@ -57,15 +83,6 @@ const Interests = ({ route, navigation }) => {
     }
   };
 
-  const toggleCheckbox = (id) => {
-    const checkboxData = [...checkboxes];
-    console.log(id);
-    console.log(checkboxData[id]);
-    checkboxData[id].checked = !checkboxData[id].checked;
-    console.log(checkboxData[id]);
-    setCheckboxes(checkboxData);
-  };
-
   return (
     <WelcomeBackground>
       <View
@@ -82,7 +99,7 @@ const Interests = ({ route, navigation }) => {
         <View
           style={{
             flex: 8,
-            backgroundColor: "yellow",
+            // backgroundColor: "yellow",
           }}>
           <View style={{ alignItems: "center" }}>
             <Text
@@ -92,25 +109,39 @@ const Interests = ({ route, navigation }) => {
             </Text>
           </View>
           <ScrollView>
-            {Object.keys(EventTypes).map((label, idx) => (
-              <View style={{ backgroundColor: "#4287f5" }} key={idx}>
-                <TouchableOpacity onPress={toggleVisibility}>
-                  <Text
-                    variant='titleLarge'
+            {collapsibles.map((collapsible) => (
+              <View style={{}} key={collapsible.id}>
+                <TouchableOpacity
+                  onPress={() => toggleVisibility(collapsible.id)}>
+                  <View
                     style={{
-                      color: "white",
-                      fontWeight: "bold",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                       margin: "5%",
                     }}>
-                    {label}
-                  </Text>
+                    <Text
+                      variant='titleLarge'
+                      style={{
+                        color: "white",
+                        fontWeight: "bold",
+                        // margin: "5%",
+                      }}>
+                      {collapsible.label}
+                    </Text>
+                    {collapsible.visible ? (
+                      <AntDesign name='up' size={24} color='black' />
+                    ) : (
+                      <AntDesign name='down' size={24} color='black' />
+                    )}
+                  </View>
                 </TouchableOpacity>
-                {EventTypes[label]?.map((category, categoryIdx) => {
+                {EventTypes[collapsible.label]?.map((category, categoryIdx) => {
                   const checkboxId = globalCheckboxIdCounter++;
                   return (
                     <Collapsible
-                      isVisible={isVisible}
-                      key={`${idx}-${categoryIdx}`}>
+                      isVisible={collapsible.visible}
+                      key={`${collapsible.id}-${categoryIdx}`}>
                       <View
                         style={{
                           alignItems: "center",
