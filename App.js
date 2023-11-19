@@ -8,6 +8,9 @@ import SignupScreen from "./screens/Signup";
 import InterestsScreen from "./screens/Interests";
 import EventScreen from "./screens/Event";
 import EventCreateScreen from "./screens/EventCreate";
+import AllGroupView from "./screens/AllGroupView";
+import CreateGroup from "./screens/CreateGroup";
+import GroupScreen from "./screens/Group";
 
 const RootStack = createNativeStackNavigator();
 
@@ -43,6 +46,21 @@ export default function App() {
         <RootStack.Screen
           name='EventCreate'
           component={EventCreateScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='GroupsView'
+          component={AllGroupView}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='CreateGroup'
+          component={CreateGroup}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='Group'
+          component={GroupScreen}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>
