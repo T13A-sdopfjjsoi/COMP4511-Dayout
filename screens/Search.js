@@ -24,8 +24,21 @@ const Search = () => {
 
   const checkFilters = (event) => {
     Object.keys(filters).forEach((key) => {
-      if (filters[key]) {
-
+      // Going through overarching filters i.e. categories, time, etc.
+      if (event[key]) {
+        Object.keys(filters[key]).forEach((subKey) => {
+          // Going through that filter (categories/Sport)
+          if (event[key][subKey]) {
+            Object.keys(filters[key][subKey]).forEach((subSubKey) => {
+              // For cases of Filter = categories/Sport/Soccer
+              if (!event[key][subKey]) { 
+                return false
+              }
+            })
+          } else {
+            return false
+          }
+        })
       } else {
         return false
       }
