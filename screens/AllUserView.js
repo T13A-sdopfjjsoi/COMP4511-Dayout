@@ -5,27 +5,34 @@ import { Button, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StoreService from "../services/StoreService";
 
-const AllUserView = ({ navigation: { goBack } }) => {
+const AllUserView = ({ route, navigation, navigation: { goBack } }) => {
+  const { screen } = route.params;
   const [users, setUsers] = useState([]);
   const [ActiveUser, setActiveUser] = useState({});
+  const [Activeusername, setActiveusername] = useState("");
 
   const fetchData = async () => {
     try {
       const allUsers = await StoreService.getAllUsers();
       const LoggedUser = await StoreService.getActive();
-
-      setActiveUser(LoggedUser);
-      setUsers(
-        allUsers.filter((user) => user.username !== LoggedUser.username)
-      );
+      console.log("AWDAWDAWD");
+      setActiveusername(LoggedUser.username);
+      setUsers(allUsers.filter((user) => user.username !== Activeusername));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const updateActiveUser = async () => {
+    const LoggedUser = await StoreService.getActive();
+    const Userdetail = await StoreService.getUser(LoggedUser.email);
+    setActiveUser(Userdetail);
+  };
+
   useEffect(() => {
     fetchData();
-  }, [ActiveUser]);
+    updateActiveUser();
+  }, []);
 
   const handleAddFriend = async (username) => {
     try {
@@ -44,7 +51,8 @@ const AllUserView = ({ navigation: { goBack } }) => {
       const status = await StoreService.assignActive(LoggedUser.email);
 
       if (status) {
-        setActiveUser(LoggedUser);
+        // setActiveUser(LoggedUser);
+        updateActiveUser();
       }
     } catch (error) {
       console.error("Error updating friend status:", error);
@@ -59,7 +67,8 @@ const AllUserView = ({ navigation: { goBack } }) => {
           margin: "10%",
         }}>
         <View style={{ alignItems: "flex-end" }}>
-          <TouchableOpacity onPress={() => goBack()}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Social", { screen: false })}>
             <MaterialCommunityIcons name='home' size={30} />
           </TouchableOpacity>
         </View>
@@ -81,7 +90,7 @@ const AllUserView = ({ navigation: { goBack } }) => {
                 <Button
                   icon='plus'
                   mode='contained'
-                  disabled={ActiveUser.friends.includes(user.username)}
+                  disabled={(ActiveUser.friends || []).includes(user.username)}
                   onPress={() => handleAddFriend(user.username)}>
                   {(ActiveUser.friends || []).includes(user.username)
                     ? "Friend Added"

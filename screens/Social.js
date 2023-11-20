@@ -1,40 +1,77 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService.js";
 
-const Social = () => {
+const Social = ({ route }) => {
+  const { screen } = route.params;
   const navigation = useNavigation();
-
-  const [user, setUser] = useState(null);
+  const [currentusername, setCurrentUsername] = useState("");
+  const [ActiveUser, setActiveUser] = useState(null);
   const [groups, setGroups] = useState([]);
   const [friends, setFriends] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const LoggedUser = await StoreService.getActive();
+  const fetchData = async () => {
+    const LoggedUser = await StoreService.getActive();
 
-      setUser(LoggedUser);
+    setCurrentUsername(LoggedUser.username);
 
-      const allGroups = await StoreService.getAllGroups();
+    const allGroups = await StoreService.getAllGroups();
 
-      setGroups(
-        allGroups.filter((group) => group.members.includes(LoggedUser.username))
+    setGroups(
+      allGroups.filter((group) => group.members.includes(currentusername))
+    );
+
+    const allFriends = await StoreService.getUser(LoggedUser.email);
+
+    setFriends(allFriends.friends || []);
+  };
+
+  const updateActiveUser = async () => {
+    const LoggedUser = await StoreService.getActive();
+    const Userdetail = await StoreService.getUser(LoggedUser.email);
+    setActiveUser(Userdetail);
+    setFriends(Userdetail.friends || []);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+      updateActiveUser();
+    }, [])
+  );
+
+  const RemoveFriend = async (username) => {
+    try {
+      // Get the user's data
+      const LoggedUser = await StoreService.getUser(ActiveUser.email);
+
+      // Update the friends array
+      const updatedFriends = LoggedUser.friends.filter(
+        (friend) => friend !== username
       );
 
-      const allFriends = await StoreService.getUser(LoggedUser.email);
+      // Update the user's data on the backend
+      await StoreService.updateUser(LoggedUser.username, {
+        ...LoggedUser,
+        friends: updatedFriends,
+      });
 
-      setFriends(allFriends.friends || []);
-    };
+      const status = await StoreService.assignActive(LoggedUser.email);
 
-    fetchData();
-  }, []);
+      if (status) {
+        updateActiveUser();
+      }
+    } catch (error) {
+      console.error("Error updating friend status:", error);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      {!user?.username ? (
+      {!ActiveUser?.username ? (
         <View style={UIStyles.header}>
           <Text style={[UIStyles.titleText, { fontWeight: "bold" }]}>
             Welcome!
@@ -68,12 +105,12 @@ const Social = () => {
           </Text>
           <Text
             style={[UIStyles.titleText, { textDecorationLine: "underline" }]}>
-            {user.username}
+            {ActiveUser.username}
           </Text>
         </View>
       )}
       <View style={UIStyles.dashContent}>
-        {!user ? (
+        {!ActiveUser ? (
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text>Please login to continue</Text>
           </View>
@@ -130,7 +167,7 @@ const Social = () => {
         )}
       </View>
 
-      {!user ? (
+      {!ActiveUser ? (
         <></>
       ) : (
         <View style={{ flex: 1, margin: 10 }}>
@@ -142,7 +179,10 @@ const Social = () => {
                 alignItems: "center",
               }}>
               <Text variant='titleLarge'>Friends</Text>
-              <Button onPress={() => navigation.navigate("AllUsersView")}>
+              <Button
+                onPress={() =>
+                  navigation.navigate("AllUsersView", { screen: true })
+                }>
                 + Add Friend
               </Button>
             </View>
@@ -172,8 +212,7 @@ const Social = () => {
                         alignItems: "center",
                       }}>
                       <Text variant='titleMedium'>{friend}</Text>
-                      <Button
-                        onPress={() => navigation.navigate("AllUsersView")}>
+                      <Button onPress={() => RemoveFriend(friend)}>
                         Remove
                       </Button>
                     </View>
