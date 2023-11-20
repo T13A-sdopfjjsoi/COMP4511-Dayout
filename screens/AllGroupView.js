@@ -37,8 +37,8 @@ const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
       subtitle: group.subtitle,
       members: [LoggedUser.username, ...group.members],
     });
-    console.log(`${LoggedUser.username} + "joined" + ${group.title}`);
-    navigation.navigate("Social");
+    console.log(`${LoggedUser.username} joined ${group.title}`);
+    navigation.navigate("Home");
   };
 
   return (

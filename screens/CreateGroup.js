@@ -22,6 +22,10 @@ const CreateGroup = ({ navigation, navigation: { goBack } }) => {
   }, []);
 
   const CreateGroupSubmit = async () => {
+    if (groupname === "" || grouptitle === "" || groupsubtitle === "") {
+      alert("Please fill all the fields");
+      return;
+    }
     const ExistGroup = await StoreService.getGroup(groupname);
     if (ExistGroup === null) {
       console.log("pass");

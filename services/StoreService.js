@@ -68,6 +68,17 @@ export default {
     }
   },
 
+  // get all users
+  async getAllUsers() {
+    try {
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
+      const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
+      return storedUsers;
+    } catch (error) {
+      console.log("Failed to get users", error);
+    }
+  },
+
   // Updates user with a given username
   async updateUser(username, user) {
     try {

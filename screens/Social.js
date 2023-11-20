@@ -10,6 +10,7 @@ const Social = () => {
 
   const [user, setUser] = useState(null);
   const [groups, setGroups] = useState([]);
+  const [friends, setFriends] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,31 +23,14 @@ const Social = () => {
       setGroups(
         allGroups.filter((group) => group.members.includes(LoggedUser.username))
       );
+
+      const allFriends = await StoreService.getUser(LoggedUser.email);
+
+      setFriends(allFriends.friends || []);
     };
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    // Your logic here to handle the changes in allGroups
-    console.log("Groups have been updated in Social:", groups);
-    setGroups(groups);
-  }, [groups]);
-
-  // const [groups, setGroups] = useState([
-  //   { name: "Group 1", id: 1, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 2", id: 2, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 3", id: 3, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 4", id: 4, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 5", id: 5, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 6", id: 6, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 7", id: 7, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 8", id: 8, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 9", id: 9, members: ["person1", "person2", "person3"] },
-  //   { name: "Group 10", id: 10, members: ["person1", "person2", "person3"] },
-  // ]);
-
-  const [friends, setFriends] = useState(["friend1", "friend2", "friend3"]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -100,9 +84,12 @@ const Social = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                marginRight: 5,
               }}>
               <Text variant='titleLarge'>Groups</Text>
-              <Button onPress={() => navigation.navigate("GroupsView", user)}>
+              <Button
+                onPress={() => navigation.navigate("GroupsView", user)}
+                mode='contained'>
                 + Join Group
               </Button>
             </View>
@@ -155,7 +142,9 @@ const Social = () => {
                 alignItems: "center",
               }}>
               <Text variant='titleLarge'>Friends</Text>
-              <Button>+ Add Friend</Button>
+              <Button onPress={() => navigation.navigate("AllUsersView")}>
+                + Add Friend
+              </Button>
             </View>
             {/* // If friends is empty array, show nothing, else show list of friends */}
             {friends.length === 0 ? (
@@ -169,7 +158,7 @@ const Social = () => {
                   marginBottom: 10,
                   margin: "5%",
                 }}>
-                {friends.map((friend) => (
+                {friends?.map((friend) => (
                   <TouchableOpacity
                     key={friend}
                     mode='contained'
@@ -183,7 +172,8 @@ const Social = () => {
                         alignItems: "center",
                       }}>
                       <Text variant='titleMedium'>{friend}</Text>
-                      <Button onPress={() => navigation.navigate("addfriend")}>
+                      <Button
+                        onPress={() => navigation.navigate("AllUsersView")}>
                         Remove
                       </Button>
                     </View>
