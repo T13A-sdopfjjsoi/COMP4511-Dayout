@@ -5,8 +5,7 @@ import { Button, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StoreService from "../services/StoreService";
 
-const AllUserView = ({ route, navigation, navigation: { goBack } }) => {
-  const { screen } = route.params;
+const AllUserView = ({ navigation, navigation: { goBack } }) => {
   const [users, setUsers] = useState([]);
   const [ActiveUser, setActiveUser] = useState({});
   const [Activeusername, setActiveusername] = useState("");
@@ -17,7 +16,9 @@ const AllUserView = ({ route, navigation, navigation: { goBack } }) => {
       const LoggedUser = await StoreService.getActive();
       console.log("AWDAWDAWD");
       setActiveusername(LoggedUser.username);
-      setUsers(allUsers.filter((user) => user.username !== Activeusername));
+      setUsers(
+        allUsers.filter((user) => user.username !== LoggedUser.username)
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -67,8 +68,7 @@ const AllUserView = ({ route, navigation, navigation: { goBack } }) => {
           margin: "10%",
         }}>
         <View style={{ alignItems: "flex-end" }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Social", { screen: false })}>
+          <TouchableOpacity onPress={() => navigation.navigate("Social")}>
             <MaterialCommunityIcons name='home' size={30} />
           </TouchableOpacity>
         </View>

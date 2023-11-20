@@ -5,8 +5,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService.js";
 
-const Social = ({ route }) => {
-  const { screen } = route.params;
+const Social = () => {
   const navigation = useNavigation();
   const [currentusername, setCurrentUsername] = useState("");
   const [ActiveUser, setActiveUser] = useState(null);
@@ -19,9 +18,11 @@ const Social = ({ route }) => {
     setCurrentUsername(LoggedUser.username);
 
     const allGroups = await StoreService.getAllGroups();
+    console.log("Mynameis", LoggedUser.username);
+    console.log("Groupsss", allGroups);
 
     setGroups(
-      allGroups.filter((group) => group.members.includes(currentusername))
+      allGroups.filter((group) => group.members.includes(LoggedUser.username))
     );
 
     const allFriends = await StoreService.getUser(LoggedUser.email);
@@ -125,7 +126,7 @@ const Social = ({ route }) => {
               }}>
               <Text variant='titleLarge'>Groups</Text>
               <Button
-                onPress={() => navigation.navigate("GroupsView", user)}
+                onPress={() => navigation.navigate("GroupsView", ActiveUser)}
                 mode='contained'>
                 + Join Group
               </Button>
@@ -179,10 +180,7 @@ const Social = ({ route }) => {
                 alignItems: "center",
               }}>
               <Text variant='titleLarge'>Friends</Text>
-              <Button
-                onPress={() =>
-                  navigation.navigate("AllUsersView", { screen: true })
-                }>
+              <Button onPress={() => navigation.navigate("AllUsersView")}>
                 + Add Friend
               </Button>
             </View>

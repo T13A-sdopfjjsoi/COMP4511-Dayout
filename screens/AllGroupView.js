@@ -8,15 +8,18 @@ import StoreService from "../services/StoreService";
 const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
   //   const navigation = useNavigation();
   const [groups, setGroups] = useState([]);
+  const [Activeusername, setActiveusername] = useState("");
 
   // find all the groups
   useEffect(() => {
-    const getAllGroups = async () => {
+    const fetchdata = async () => {
       const allGroups = await StoreService.getAllGroups();
       console.log(allGroups);
       setGroups(allGroups);
+      const LoggedUser = await StoreService.getActive();
+      setActiveusername(LoggedUser.username);
     };
-    getAllGroups();
+    fetchdata();
   }, []);
 
   const removegroups = async () => {
@@ -31,14 +34,13 @@ const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
 
   const JoinGroup = async (group) => {
     const LoggedUser = await StoreService.getActive();
-    const GroupsDetail = await StoreService.updateGroup(group.id, {
-      id: group.id,
-      title: group.title,
-      subtitle: group.subtitle,
+    const Groupdetail = await StoreService.getGroup(group.id);
+    const updategroup = await StoreService.updateGroup(group.id, {
+      ...Groupdetail,
       members: [LoggedUser.username, ...group.members],
     });
     console.log(`${LoggedUser.username} joined ${group.title}`);
-    navigation.navigate("Home");
+    navigation.navigate("Social");
   };
 
   return (
@@ -72,7 +74,11 @@ const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
                 <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
                 <Card.Title title={group.title} subtitle={group.subtitle} />
                 <Card.Actions>
-                  <Button onPress={() => JoinGroup(group)}>Join</Button>
+                  <Button
+                    disabled={(group.members || []).includes(Activeusername)}
+                    onPress={() => JoinGroup(group)}>
+                    Join
+                  </Button>
                 </Card.Actions>
               </Card>
             </View>

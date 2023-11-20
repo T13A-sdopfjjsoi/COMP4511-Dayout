@@ -8,7 +8,7 @@ import WelcomeBackground from "./Components/WelcomeBackground";
 const CreateGroup = ({ navigation, navigation: { goBack } }) => {
   const [user, setUser] = useState(null);
   const [groupname, setGroupname] = useState("");
-  const [grouptitle, setGrouptitle] = useState("");
+  // const [grouptitle, setGrouptitle] = useState("");
   const [groupsubtitle, setGroupsubtitle] = useState("");
   const [groupmembers, setGroupmembers] = useState([]);
 
@@ -22,7 +22,7 @@ const CreateGroup = ({ navigation, navigation: { goBack } }) => {
   }, []);
 
   const CreateGroupSubmit = async () => {
-    if (groupname === "" || grouptitle === "" || groupsubtitle === "") {
+    if (groupname === "" || groupsubtitle === "") {
       alert("Please fill all the fields");
       return;
     }
@@ -32,12 +32,14 @@ const CreateGroup = ({ navigation, navigation: { goBack } }) => {
 
       const AddGroupStatus = await StoreService.addGroup({
         name: groupname,
-        title: grouptitle,
+        // title: grouptitle,
         subtitle: groupsubtitle,
         members: [user.username, ...groupmembers],
+        owner: user.username,
+        datemarked: {},
       });
       if (AddGroupStatus) {
-        navigation.navigate("Home");
+        navigation.navigate("Social");
       }
     }
   };
@@ -76,7 +78,7 @@ const CreateGroup = ({ navigation, navigation: { goBack } }) => {
               onChangeText={(groupname) => setGroupname(groupname)}
             />
           </View>
-          <View style={{ marginBottom: 20 }}>
+          {/* <View style={{ marginBottom: 20 }}>
             <TextInput
               theme={{ roundness: 25 }}
               style={{
@@ -89,7 +91,7 @@ const CreateGroup = ({ navigation, navigation: { goBack } }) => {
               value={grouptitle}
               onChangeText={(title) => setGrouptitle(title)}
             />
-          </View>
+          </View> */}
           <View style={{ marginBottom: 20 }}>
             <TextInput
               theme={{ roundness: 25 }}
