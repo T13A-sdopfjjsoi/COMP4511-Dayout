@@ -7,7 +7,6 @@ import Dropdown from 'react-native-input-select';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { format } from "date-fns";
 
-
 import UIStyles from "./styles";
 
 const FiltersScreen = () => {
@@ -43,28 +42,28 @@ const FiltersScreen = () => {
   );  
 
   const getTimestamp = () => {
-    let startTime = new Date().getTime();
-    let endTime = -1;
+    let start_time = new Date().getTime();
+    let end_time = -1;
     
     switch (period) {
       case "to":
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        return { startTime, endTime: tomorrow.getTime() }; 
+        return { start_time, end_time: tomorrow.getTime() }; 
       case "1w":
         const oneWeek = new Date();
         oneWeek.setDate(oneWeek.getDate() + 7);
-        return { startTime, endTime: oneWeek.getTime() }; 
+        return { start_time, end_time: oneWeek.getTime() }; 
       case "1m":
         const oneMonth = new Date();
         oneMonth.setMonth(oneMonth.getMonth() + 1);
-        return { startTime, endTime: oneMonth.getTime() };
+        return { start_time, end_time: oneMonth.getTime() };
       case "cu":
         return (range.startDate && range.endDate) ? 
-          { startTime: range.startDate.getTime(), endTime: range.endDate.getTime() } :
-          { startTime, endTime };
+          { start_time: range.startDate.getTime(), end_time: range.endDate.getTime() } :
+          { start_time, end_time };
       default:
-        return { startTime, endTime };
+        return { start_time, end_time };
     }
   };
   
@@ -89,7 +88,7 @@ const FiltersScreen = () => {
   };
 
   const addCategory = (label, category) => {
-    let prevCategories = { ...filters }['categories'] ? ({ ...filters }['categories']) : ({});
+    let prevCategories = { ...filters }['tags'] ? ({ ...filters }['tags']) : ({});
 
     if (category === null) {
       if (isEqual(prevCategories[label], categories[label])) {
@@ -113,7 +112,7 @@ const FiltersScreen = () => {
     }
 
     let prevFilters = { ...filters }
-    prevFilters['categories'] = prevCategories
+    prevFilters['tags'] = prevCategories
 
     setFilters(prevFilters);
   };
@@ -155,14 +154,14 @@ const FiltersScreen = () => {
           </View>
         )}
       </View>
-      <Text>Categories</Text>
+      <Text>Tags</Text>
 
       {Object.keys(categories).map((label) => (
         <View style={{backgroundColor:"#4287f5", marginBottom: 5}} key={label}>
           <View style={{alignItems:"center",flexDirection:"row",justifyContent:"space-between"}}>
             <Text style={UIStyles.blackTitleText}>{label}</Text>
             <Checkbox
-              status={filters['categories'] ? (filters['categories'][label] ? (isEqual(filters['categories'][label], categories[label]) ? ('checked') : ('unchecked')) : ('unchecked')) : ('unchecked')}
+              status={filters['tags'] ? (filters['tags'][label] ? (isEqual(filters['tags'][label], categories[label]) ? ('checked') : ('unchecked')) : ('unchecked')) : ('unchecked')}
               onPress={() => {
                 addCategory(label, null)
               }}
@@ -172,7 +171,7 @@ const FiltersScreen = () => {
             <View style={{alignItems:"center",flexDirection:"row",justifyContent:"space-between"}} key={category}>
             <Text>{category}</Text>
             <Checkbox
-              status={filters['categories'] ? (filters['categories'][label] ? (filters['categories'][label].includes(category)? ('checked') : ('unchecked')) : ('unchecked')) : ('unchecked')}
+              status={filters['tags'] ? (filters['tags'][label] ? (filters['tags'][label].includes(category)? ('checked') : ('unchecked')) : ('unchecked')) : ('unchecked')}
               onPress={() => {
                 addCategory(label, category)
               }}

@@ -5,8 +5,6 @@ import UIStyles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
 import { format } from "date-fns";
-import { el } from "react-native-paper-dates";
-
 
 const Search = () => {
   const navigation = useNavigation();
@@ -17,26 +15,89 @@ const Search = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const events = [
-    {"id": "1", "name": "This is the name", "categories":{"Sport":["Tennis"]}},
-    {"id": "2", "name": "Fishing trip", "categories":{"Sport":["Tennis"]}},
-    {"id": "3", "name": "Fishing thing", "categories":{"Sport":["Tennis"]}},
-    {"id": "4", "name": "Different name", "categories":{"Sport":["Soccer"]}},
-    {"id": "5", "name": "This isn't the name", "categories":{"Sport":["Tennis"]}},
+    {
+      "id": "event-1234",
+      "creator": "thegardenpeople",
+      "name": "Gardene11r Wars",
+      "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
+      "location": "UNSW Anzac Parade",
+      "start_time": "1740572236424",
+      "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
+      "tags": {"Sport": ["Soccer"]},
+      "users_going": ["ben", "josh"],
+      "users_interested": ["thesnowpeople", "samuel"],
+      "rating": "5.0",
+      "comments": [
+        {
+          "id": "post-123",
+          "commenter": "thesnowpeople",
+          "content": "I LOVE GARDEN WARS SO MUCH #GARDENGANG LETS GOOOO"
+        }
+      ]
+    }, {
+      "id": "event-12553",
+      "creator": "thegardenpeople",
+      "name": "Gardene222r Wars",
+      "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
+      "location": "UNSW Anzac Parade",
+      "start_time": "1699593505",
+      "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
+      "tags": {"Sport": ["Soccer"]},
+      "users_going": ["ben", "josh"],
+      "users_interested": ["thesnowpeople", "samuel"],
+      "rating": "5.0",
+      "comments": [
+        {
+          "id": "post-123",
+          "commenter": "thesnowpeople",
+          "content": "I LOVE GARDEN WARS SO MUCH #GARDENGANG LETS GOOOO"
+        }
+      ]
+    }, {
+      "id": "event-12663",
+      "creator": "thegardenpeople",
+      "name": "Garden33r Wars",
+      "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
+      "location": "UNSW Anzac Parade",
+      "start_time": "16995993505",
+      "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
+      "tags": {"Sport": ["Soccer"]},
+      "users_going": ["ben", "josh"],
+      "users_interested": ["thesnowpeople", "samuel"],
+      "rating": "5.0",
+      "comments": [
+        {
+          "id": "post-123",
+          "commenter": "thesnowpeople",
+          "content": "I LOVE GARDEN WARS SO MUCH #GARDENGANG LETS GOOOO"
+        }
+      ]
+    }
   ]
   const [showEvents, setShowEvents] = useState(events);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({start_time : new Date().getTime()});
 
 
   useEffect(() => {  
-    setFilters(routeFilters ? routeFilters : {});
+    setFilters(routeFilters ? routeFilters : { start_time: new Date().getTime() });
     setSearchQuery(routeSearch ? routeSearch : '');
-
-    if (routeFilters && routeFilters.endTime !== undefined && routeFilters.startTime !== undefined) {
-      setPeriod(routeFilters.endTime === -1 ? 'All Time' : `${format(routeFilters.startTime, "do/MMM")} - ${format(routeFilters.endTime, "do/MMM")}`);
+  
+    if (routeFilters && routeFilters.end_time !== undefined && routeFilters.start_time !== undefined) {
+      setPeriod(routeFilters.end_time === -1 ? 'All Time' : `${format(routeFilters.start_time, "do/MMM")} - ${format(routeFilters.end_time, "do/MMM")}`);
     } else {
       setPeriod('All Time');
     }
+  
+    if (routeSearch) {
+      setShowEvents(events.filter((event) => checkFilters(event, routeSearch)));
+    } else {
+      setShowEvents(events.filter((event) => checkFilters(event, "")));
+    }
   }, [routeFilters, routeSearch]);
+
 
   const checkFilters = (event, query) => {
     let isFiltered = true;
@@ -44,9 +105,9 @@ const Search = () => {
     if (!event.name.includes(query)) {
       return false;
     }
-  
+
     Object.keys(filters).forEach((key) => {
-      if (key === "categories") {
+      if (key === "tags") {
         Object.keys(filters[key]).forEach((subKey) => {
           if (event[key][subKey]) {
             Object.keys(filters[key][subKey]).forEach((subSubKey) => {
@@ -55,18 +116,19 @@ const Search = () => {
               }
             });
           } else {
+
             isFiltered = false;
           }
         });
-      } else if (key === "startTime") {
-        const eventStartTime = new Date(event[key]);
-        if (eventStartTime.getTime() < filters[key]) {
+      } else if (key === "start_time") {
+        const eventStartTime = parseInt(event[key]);
+        if (eventStartTime < filters[key]) {
           isFiltered = false;
         }
-      } else if (key === "endTime") {
-        if (period !== "All Time") {
-          const eventEndTime = new Date(event[key]);
-          if (eventEndTime.getTime() > filters[key]) {
+      } else if (key === "end_time") {
+        if (filters[key] !== -1) {
+          const eventEndTime = parseInt(event["start_time"]);
+          if (eventEndTime > filters[key]) {
             isFiltered = false;
           }
         }
@@ -82,9 +144,9 @@ const Search = () => {
 
   const filterCount = () => {
     let count = 0
-    filters['categories'] && (
-      Object.keys(filters['categories']).map((key) => {
-        count = count + filters['categories'][key].length
+    filters['tags'] && (
+      Object.keys(filters['tags']).map((key) => {
+        count = count + filters['tags'][key].length
       })
     )
     return count;
@@ -114,18 +176,19 @@ const Search = () => {
       <Text>{period}</Text>
     </View>
 
-      <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20, marginBottom: 50}}>
+      <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20}}>
         {showEvents.map((event) => (
           <Card key={event.id} style={UIStyles.searchCard} 
           onPress={() => navigation.navigate('Event', { eventId: event.id })}>
             <Card.Content>
-              <Title>{event.name}</Title>
-              <Paragraph>lorem ipsum and shit lorem ipsum and shit lorem ipsum and shit lorem ipsum and shit lorem ipsum and shit</Paragraph>
+              <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                <Title>{event.name}</Title>
+                <Text>{format(new Date(parseInt(event.start_time) * 1000), "d/MMM")}</Text>
+
+              </View>
+              <Paragraph numberOfLines={3}>{event.description}</Paragraph>
             </Card.Content>
             {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-            <Card.Actions>
-              <IconButton icon="bookmark" onPress={() => console.log("Save " + event.id)}>Cancel</IconButton>
-            </Card.Actions>
           </Card>
       ))}
 
