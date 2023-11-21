@@ -1,0 +1,30 @@
+{
+  "vacation": {
+    "key": "vacation",
+    "color": "red",
+    "selectedDotColor": "blue"
+  },
+  "massage": {
+    "key": "massage",
+    "color": "blue",
+    "selectedDotColor": "blue"
+  },
+  "workout": { "key": "workout", "color": "green" },
+  "work": { "key": "work", "color": "blue", "selectedDotColor": "blue" },
+  "birthday": { "key": "birthday", "color": "red", "selectedDotColor": "blue" },
+  "drinks": { "key": "drinks", "color": "red", "selectedDotColor": "blue" },
+  "food": { "key": "food", "color": "red", "selectedDotColor": "blue" },
+  "study": { "key": "study", "color": "red", "selectedDotColor": "blue" },
+  "party": { "key": "party", "color": "red", "selectedDotColor": "blue" },
+  "date": { "key": "date", "color": "red", "selectedDotColor": "blue" },
+  "shopping": { "key": "shopping", "color": "red", "selectedDotColor": "blue" },
+  "movie": { "key": "movie", "color": "red", "selectedDotColor": "blue" },
+  "travel": { "key": "travel", "color": "red", "selectedDotColor": "blue" },
+  "gym": { "key": "gym", "color": "red", "selectedDotColor": "blue" },
+  "meeting": { "key": "meeting", "color": "red", "selectedDotColor": "blue" },
+  "call": { "key": "call", "color": "red", "selectedDotColor": "blue" },
+  "event": { "key": "event", "color": "red", "selectedDotColor": "blue" },
+  "family": { "key": "family", "color": "red", "selectedDotColor": "blue" },
+  "Travel": { "key": "Travel", "color": "red", "selectedDotColor": "blue" },
+  "Other": { "key": "Other", "color": "red", "selectedDotColor": "blue" }
+}

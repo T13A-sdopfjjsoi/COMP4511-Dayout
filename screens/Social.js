@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { Button, Text } from "react-native-paper";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import UIStyles from "./styles.js";
@@ -143,14 +148,13 @@ const Social = () => {
               <ScrollView
                 horizontal={true}
                 contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-                {groups.map((group) => (
+                {groups.map((group, idx) => (
                   <TouchableOpacity
                     key={group.id}
                     mode='contained'
                     style={{
                       width: 150,
                       height: 150,
-                      backgroundColor: "yellow",
                       margin: 5,
                       borderRadius: 15,
                       justifyContent: "center",
@@ -159,7 +163,26 @@ const Social = () => {
                     onPress={() =>
                       navigation.navigate("Group", { id: group.id })
                     }>
-                    <Text>{group.name}</Text>
+                    <ImageBackground
+                      source={{ uri: `https://picsum.photos/7${idx}` }}
+                      imageStyle={{ borderRadius: 15 }}
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 24,
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          backgroundColor: "#000000a0",
+                        }}>
+                        {group.name}
+                      </Text>
+                    </ImageBackground>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -208,6 +231,10 @@ const Social = () => {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
+                        backgroundColor: "#bdbdbd",
+                        borderRadius: 15,
+                        padding: 5,
+                        margin: 5,
                       }}>
                       <Text variant='titleMedium'>{friend}</Text>
                       <Button onPress={() => RemoveFriend(friend)}>
