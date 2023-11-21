@@ -36,7 +36,7 @@ const CreateGroup = ({ navigation, navigation: { goBack } }) => {
         subtitle: groupsubtitle,
         members: [user.username, ...groupmembers],
         owner: user.username,
-        datemarked: {},
+        datemarked: undefined,
       });
       if (AddGroupStatus) {
         navigation.navigate("Social");

@@ -13,12 +13,18 @@ import StoreService from "../services/StoreService.js";
 const Social = () => {
   const navigation = useNavigation();
   const [currentusername, setCurrentUsername] = useState("");
+  const [LoggedUser, setLoggedUser] = useState({});
+  const [temp, setTemp] = useState({});
   const [ActiveUser, setActiveUser] = useState(null);
   const [groups, setGroups] = useState([]);
   const [friends, setFriends] = useState([]);
 
   const fetchData = async () => {
-    const LoggedUser = await StoreService.getActive();
+    console.log(
+      "fetching data--------------------------------------------------------------"
+    );
+
+    console.log("LoggedUser", LoggedUser);
 
     setCurrentUsername(LoggedUser.username);
 
@@ -36,7 +42,9 @@ const Social = () => {
   };
 
   const updateActiveUser = async () => {
-    const LoggedUser = await StoreService.getActive();
+    console.log(
+      "update active user-----------------------------------------------------"
+    );
     const Userdetail = await StoreService.getUser(LoggedUser.email);
     setActiveUser(Userdetail);
     setFriends(Userdetail.friends || []);
@@ -44,10 +52,24 @@ const Social = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchData();
-      updateActiveUser();
+      const getuser = async () => {
+        const user = await StoreService.getActive();
+        setLoggedUser(user);
+      };
+      getuser();
     }, [])
   );
+
+  useEffect(() => {
+    (async () => {
+      // updateScreen();
+      console.log("Mid check", LoggedUser);
+      if (Object.keys(LoggedUser).length > 0) {
+        fetchData();
+        updateActiveUser();
+      }
+    })();
+  }, [LoggedUser]);
 
   const RemoveFriend = async (username) => {
     try {
@@ -78,8 +100,14 @@ const Social = () => {
   return (
     <View style={{ flex: 1 }}>
       {!ActiveUser?.username ? (
-        <View style={UIStyles.header}>
-          <Text style={[UIStyles.titleText, { fontWeight: "bold" }]}>
+        <View
+          style={{
+            paddingTop: 60,
+            padding: 20,
+            backgroundColor: "red",
+            width: "100%",
+          }}>
+          <Text style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
             Welcome!
           </Text>
           <View style={UIStyles.buttonContainer}>
@@ -105,20 +133,34 @@ const Social = () => {
           </View>
         </View>
       ) : (
-        <View style={UIStyles.header}>
-          <Text style={[UIStyles.titleText, { fontWeight: "bold" }]}>
+        <View
+          style={{
+            paddingTop: 60,
+            padding: 20,
+            backgroundColor: "red",
+          }}>
+          <Text style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
             Social Your Way
           </Text>
           <Text
-            style={[UIStyles.titleText, { textDecorationLine: "underline" }]}>
+            style={{
+              fontSize: 30,
+              color: "#ffffff",
+              textDecorationLine: "underline",
+            }}>
             {ActiveUser.username}
           </Text>
         </View>
       )}
-      <View style={UIStyles.dashContent}>
+      <View style={{ margin: 10 }}>
         {!ActiveUser ? (
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text>Please login to continue</Text>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}>
+            <Text variant='displaySmall'>Please login to continue</Text>
           </View>
         ) : (
           <ScrollView style={{ marginBottom: 10 }}>
@@ -136,8 +178,6 @@ const Social = () => {
                 + Join Group
               </Button>
             </View>
-            {/* // If groups is empty array, show nothing, else show list of groups
-          available */}
             {groups.length === 0 ? (
               // Render this when groups is an empty array
               <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -203,7 +243,9 @@ const Social = () => {
                 alignItems: "center",
               }}>
               <Text variant='titleLarge'>Friends</Text>
-              <Button onPress={() => navigation.navigate("AllUsersView")}>
+              <Button
+                mode='contained'
+                onPress={() => navigation.navigate("AllUsersView")}>
                 + Add Friend
               </Button>
             </View>
@@ -220,11 +262,7 @@ const Social = () => {
                   margin: "5%",
                 }}>
                 {friends?.map((friend) => (
-                  <TouchableOpacity
-                    key={friend}
-                    mode='contained'
-                    style={{}}
-                    onPress={() => {}}>
+                  <TouchableOpacity key={friend} mode='contained'>
                     <View
                       style={{
                         height: 50,

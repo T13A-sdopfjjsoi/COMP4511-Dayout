@@ -11,15 +11,10 @@ import {
 import StoreService from "../services/StoreService";
 import UIStyles from "./styles.js";
 import { Calendar } from "react-native-calendars";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import ActivitiesTypes from "../data/ActivitiesType.json";
 
-// List type of activities
-const vacation = { key: "vacation", color: "red", selectedDotColor: "blue" };
-const massage = { key: "massage", color: "blue", selectedDotColor: "blue" };
-const workout = { key: "workout", color: "green" };
-
-const Group = ({ route, navigation }) => {
+const Group = ({ route, navigation, navigation: { goBack } }) => {
   const { id } = route.params ?? {};
   const [group, setGroup] = useState({});
   const [selected, setSelected] = useState("");
@@ -91,19 +86,21 @@ const Group = ({ route, navigation }) => {
     }
   };
 
-  const [visible, setVisible] = useState(false);
+  const [selectmodelvisible, setSelectmodelvisible] = useState(false);
+  const [checkViewvisiable, setCheckViewvisiable] = useState(false);
 
-  const showDialog = () => setVisible(true);
+  const showselectDialog = () => setSelectmodelvisible(true);
+  const showcheckDialog = () => setCheckViewvisiable(true);
 
-  const hideDialog = async () => {
+  const hideselectDialog = async () => {
     if (activity === "") {
       console.log("No activity selected");
-      setVisible(false);
+      setSelectmodelvisible(false);
       return;
     }
     const Groupdetail = await StoreService.getGroup(id);
     console.log(Groupdetail);
-    setVisible(false);
+    setSelectmodelvisible(false);
     console.log(activity);
     console.log(Groupdetail.datemarked);
     const prevdate = Groupdetail.datemarked[selected]?.dots || [];
@@ -123,6 +120,15 @@ const Group = ({ route, navigation }) => {
     updateGroupDetail();
   };
 
+  const hidecheckDialog = () => {
+    setCheckViewvisiable(false);
+  };
+
+  const AddnewActivity = () => {
+    setCheckViewvisiable(false);
+    setSelectmodelvisible(true);
+  };
+
   return (
     <PaperProvider>
       <View style={{ flex: 1 }}>
@@ -134,8 +140,8 @@ const Group = ({ route, navigation }) => {
             width: "100%",
           }}>
           <View style={{ alignItems: "flex-start" }}>
-            <TouchableOpacity onPress={() => navigation.navigate("Social")}>
-              <MaterialCommunityIcons name='home' size={30} />
+            <TouchableOpacity onPress={() => goBack()}>
+              <MaterialIcons name='arrow-back' size={30} />
             </TouchableOpacity>
           </View>
           <View
@@ -151,8 +157,8 @@ const Group = ({ route, navigation }) => {
           <Portal>
             <Portal>
               <Dialog
-                visible={visible}
-                onDismiss={hideDialog}
+                visible={selectmodelvisible}
+                onDismiss={hideselectDialog}
                 style={{ maxHeight: "50%" }}>
                 <Dialog.Title>Add Activity</Dialog.Title>
                 <Dialog.ScrollArea>
@@ -173,7 +179,39 @@ const Group = ({ route, navigation }) => {
                   </ScrollView>
                 </Dialog.ScrollArea>
                 <Dialog.Actions>
-                  <Button onPress={hideDialog}>Done</Button>
+                  <Button onPress={hideselectDialog}>Done</Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+            <Portal>
+              <Dialog
+                visible={checkViewvisiable}
+                onDismiss={hidecheckDialog}
+                style={{ maxHeight: "50%" }}>
+                <Dialog.Title>Activities</Dialog.Title>
+                {!group.datemarked ? (
+                  <View>
+                    <Text>NO activity</Text>
+                    <Text>{group.datemarked || `date`}</Text>
+                  </View>
+                ) : (
+                  <Dialog.ScrollArea>
+                    <ScrollView
+                      contentContainerStyle={{ paddingHorizontal: 24 }}>
+                      {group.datemarked[selected]?.dots?.map(
+                        (activity, idx) => (
+                          <View key={idx}>
+                            <Text variant='titleLarge'>{activity.key}</Text>
+                          </View>
+                        )
+                      )}
+                    </ScrollView>
+                  </Dialog.ScrollArea>
+                )}
+
+                <Dialog.Actions>
+                  <Button onPress={AddnewActivity}>Add</Button>
+                  <Button onPress={hidecheckDialog}>Done</Button>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
@@ -191,7 +229,12 @@ const Group = ({ route, navigation }) => {
                 mode='contained'
                 disabled={selected === ""}
                 onPress={() => {
-                  showDialog();
+                  {
+                    group.datemarked[selected]?.dots?.length === 0 ||
+                    group.datemarked[selected]?.dots === undefined
+                      ? showselectDialog(selected)
+                      : showcheckDialog();
+                  }
                 }}>
                 Add Activity
               </Button>
@@ -204,12 +247,12 @@ const Group = ({ route, navigation }) => {
                 }}
                 markingType={"multi-dot"}
                 markedDates={{
+                  ...datesmarked,
                   [selected]: {
                     selected: true,
                     disableTouchEvent: true,
                     selectedDotColor: "orange",
                   },
-                  ...datesmarked,
                 }}
               />
             </View>
@@ -235,9 +278,9 @@ const Group = ({ route, navigation }) => {
                     return a.localeCompare(b);
                   }
                 })
-                .map((member) => (
+                .map((member, idx) => (
                   <View
-                    key={member}
+                    key={idx}
                     style={{
                       height: 50,
                       flexDirection: "row",
