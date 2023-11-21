@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
-import { Button } from 'react-native-paper';
-import { Checkbox } from 'react-native-paper';
-
+import { Button, Checkbox, Menu, Divider } from 'react-native-paper';
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
+import Dropdown from 'react-native-input-select';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { format } from "date-fns";
+
 
 import UIStyles from "./styles";
 
@@ -13,10 +15,59 @@ const FiltersScreen = () => {
   const route = useRoute();
   const routeFilters = route.params?.filters
   const routeSearch = route.params?.search
+  const [range, setRange] = useState({ startDate: undefined, endDate: undefined });
+  const [open, setOpen] = React.useState(false);
 
   const [filters, setFilters] = useState({})
   const [search, setSearch] = useState('')
+  const [period, setPeriod] = useState('at')
   const categories = {"Sport": ["Soccer", "Tennis"], "Social" : ["Meet up", "other thing"]}
+  const periods = [
+    {label: "All time", value: "at"},
+    {label: "Today", value: "to"}, 
+    {label: "1 Week", value: "1w"}, 
+    {label: "1 Month", value: "1m"}, 
+    {label: "Custom", value: "cu"}]
+    
+  // Taken from https://web-ridge.github.io/react-native-paper-dates/docs/date-picker/range-date-picker  
+  const onDismiss = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+  
+  const onConfirm = React.useCallback(
+    ({ startDate, endDate }) => {
+      setOpen(false);
+      setRange({ startDate, endDate });
+    },
+    [setOpen, setRange]
+  );  
+
+  const getTimestamp = () => {
+    let startTime = new Date().getTime();
+    let endTime = -1;
+    
+    switch (period) {
+      case "to":
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return { startTime, endTime: tomorrow.getTime() }; 
+      case "1w":
+        const oneWeek = new Date();
+        oneWeek.setDate(oneWeek.getDate() + 7);
+        return { startTime, endTime: oneWeek.getTime() }; 
+      case "1m":
+        const oneMonth = new Date();
+        oneMonth.setMonth(oneMonth.getMonth() + 1);
+        return { startTime, endTime: oneMonth.getTime() };
+      case "cu":
+        return (range.startDate && range.endDate) ? 
+          { startTime: range.startDate.getTime(), endTime: range.endDate.getTime() } :
+          { startTime, endTime };
+      default:
+        return { startTime, endTime };
+    }
+  };
+  
 
   useEffect(() => {  
     setFilters(routeFilters ? (routeFilters) : ({}))
@@ -69,9 +120,43 @@ const FiltersScreen = () => {
 
   return (
     <View style={{margin:20, marginTop:80}}>
-      <Text style={UIStyles.blackTitleText}>Filters!!</Text>
-      <Button onPress={() => navigation.navigate('Search', { filters: filters })}>This assigns filters</Button>
-      <Button onPress={() => navigation.navigate('Search', { filters: {} })}>This has no filters</Button>
+      <Text style={UIStyles.blackTitleText}>Filters</Text>
+      <Button onPress={() => navigation.navigate('Search', { filters: {...filters, ...getTimestamp()}})}>Close</Button>
+      <Text>Period</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'top', width: '50%' }}>
+        <Dropdown
+          placeholder="Select period."
+          options={periods}
+          selectedValue={period}
+          onValueChange={(value) => setPeriod(value)}
+          primaryColor={'purple'}
+          style={{ width: '50%' }}
+        />
+        {period === 'cu' && (
+          <View style={{ width: '100%', alignItems:"center", flexDirection:"column"}}>
+            <Text style={{margin:2}}>{
+              range.startDate && range.endDate ? 
+              (format(range.startDate,"do/MMM") 
+              + " - " + 
+              format(range.endDate,"do/MMM")
+              ) : ("Period not selected")}</Text>
+            <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+              Pick range
+            </Button>
+            <DatePickerModal
+              locale="en-GB"
+              mode="range"
+              visible={open}
+              onDismiss={onDismiss}
+              startDate={range.startDate}
+              endDate={range.endDate}
+              onConfirm={onConfirm}
+            />
+          </View>
+        )}
+      </View>
+      <Text>Categories</Text>
+
       {Object.keys(categories).map((label) => (
         <View style={{backgroundColor:"#4287f5", marginBottom: 5}} key={label}>
           <View style={{alignItems:"center",flexDirection:"row",justifyContent:"space-between"}}>
@@ -102,3 +187,4 @@ const FiltersScreen = () => {
 };
 
 export default FiltersScreen;
+

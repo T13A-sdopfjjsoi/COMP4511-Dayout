@@ -4,13 +4,16 @@ import { Searchbar, Avatar, Button, Card, Title, Paragraph, IconButton  } from '
 import UIStyles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
+import { format } from "date-fns";
+import { el } from "react-native-paper-dates";
+
 
 const Search = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const routeFilters = route.params?.filters
   const routeSearch = route.params?.search
-
+  const [period, setPeriod] = useState("All time")
 
   const [searchQuery, setSearchQuery] = useState('');
   const events = [
@@ -23,10 +26,17 @@ const Search = () => {
   const [showEvents, setShowEvents] = useState(events);
   const [filters, setFilters] = useState({});
 
+
   useEffect(() => {  
-    setFilters(routeFilters ? (routeFilters) : ({}))
-    onChangeSearch(routeSearch ? (routeSearch) : (''))
-  },[routeFilters, routeSearch])
+    setFilters(routeFilters ? routeFilters : {});
+    setSearchQuery(routeSearch ? routeSearch : '');
+
+    if (routeFilters && routeFilters.endTime !== undefined && routeFilters.startTime !== undefined) {
+      setPeriod(routeFilters.endTime === -1 ? 'All Time' : `${format(routeFilters.startTime, "do/MMM")} - ${format(routeFilters.endTime, "do/MMM")}`);
+    } else {
+      setPeriod('All Time');
+    }
+  }, [routeFilters, routeSearch]);
 
   const checkFilters = (event, query) => {
     let isFiltered = true;
@@ -36,7 +46,7 @@ const Search = () => {
     }
   
     Object.keys(filters).forEach((key) => {
-      if (event[key]) {
+      if (key === "categories") {
         Object.keys(filters[key]).forEach((subKey) => {
           if (event[key][subKey]) {
             Object.keys(filters[key][subKey]).forEach((subSubKey) => {
@@ -48,6 +58,18 @@ const Search = () => {
             isFiltered = false;
           }
         });
+      } else if (key === "startTime") {
+        const eventStartTime = new Date(event[key]);
+        if (eventStartTime.getTime() < filters[key]) {
+          isFiltered = false;
+        }
+      } else if (key === "endTime") {
+        if (period !== "All Time") {
+          const eventEndTime = new Date(event[key]);
+          if (eventEndTime.getTime() > filters[key]) {
+            isFiltered = false;
+          }
+        }
       } else {
         isFiltered = false;
       }
@@ -56,8 +78,7 @@ const Search = () => {
     return isFiltered;
   };
   
-
-  const [period, setPeriod] = useState("All time")
+  
 
   const filterCount = () => {
     let count = 0
@@ -70,9 +91,10 @@ const Search = () => {
   }
 
   const onChangeSearch = (query) => {
-    setSearchQuery(query),
+    setSearchQuery(query);
     setShowEvents(events.filter((event) => (checkFilters(event, query))));
-  }
+}
+
 
   return (
     <View>
@@ -89,7 +111,7 @@ const Search = () => {
         >Fitlers</Button>
         <Text>{filterCount()} filters</Text>
       </View>
-      <Text>Showing {period}</Text>
+      <Text>{period}</Text>
     </View>
 
       <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20, marginBottom: 50}}>

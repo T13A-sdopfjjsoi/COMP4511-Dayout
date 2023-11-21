@@ -9,6 +9,8 @@ import InterestsScreen from "./screens/Interests";
 import EventScreen from "./screens/Event";
 import EventCreateScreen from "./screens/EventCreate";
 import FiltersScreen from "./screens/Filters";
+import { enGB, registerTranslation } from 'react-native-paper-dates'
+registerTranslation('en-GB', enGB)
 
 const RootStack = createNativeStackNavigator();
 
