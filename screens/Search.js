@@ -168,7 +168,7 @@ const Search = () => {
     />
     <View style={{flexDirection: 'row', alignItems:"center", justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginBottom: 10}}>
       <View style={{flexDirection: 'row', alignItems:"center"}}>
-        <Button style={{width:100, marginRight:5}} buttonColor="purple" textColor="white"
+        <Button style={{width:100, marginRight:5}} buttonColor="#63519f" textColor="white"
           onPress={() => navigation.navigate('Filters', { filters: filters })}
         >Fitlers</Button>
         <Text>{filterCount()} filters</Text>

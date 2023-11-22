@@ -8,16 +8,14 @@ import SignupScreen from "./screens/Signup";
 import InterestsScreen from "./screens/Interests";
 import EventScreen from "./screens/Event";
 import EventCreateScreen from "./screens/EventCreate";
-<<<<<<< HEAD
-import FiltersScreen from "./screens/Filters";
-import { enGB, registerTranslation } from 'react-native-paper-dates'
-registerTranslation('en-GB', enGB)
-=======
 import AllGroupView from "./screens/AllGroupView";
 import CreateGroup from "./screens/CreateGroup";
 import GroupScreen from "./screens/Group";
 import AllUserView from "./screens/AllUserView";
->>>>>>> 1b44c8731032407ba23ca7280fdb8bf5f1b6efca
+import FiltersScreen from "./screens/Filters";
+import EventTags from "./screens/EventTags";
+import { enGB, registerTranslation } from 'react-native-paper-dates'
+registerTranslation('en-GB', enGB)
 
 const RootStack = createNativeStackNavigator();
 
@@ -56,10 +54,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <RootStack.Screen
-<<<<<<< HEAD
           name='Filters'
           component={FiltersScreen}
-=======
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
           name='GroupsView'
           component={AllGroupView}
           options={{ headerShown: false }}
@@ -77,7 +76,11 @@ export default function App() {
         <RootStack.Screen
           name='AllUsersView'
           component={AllUserView}
->>>>>>> 1b44c8731032407ba23ca7280fdb8bf5f1b6efca
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='EventTags'
+          component={EventTags}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>
