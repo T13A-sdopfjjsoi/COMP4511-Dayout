@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, View, Text, Image, StyleSheet } from "react-native";
+import { Button, View, Text, Image } from "react-native";
 import Back from "./Components/Back"
 import { useRoute } from '@react-navigation/native';
 import StoreService from "../services/StoreService";
@@ -17,7 +17,9 @@ const EventScreen = () => {
   const getEvent = async () => {
     console.log(`Getting event: ${eventId}`);
     const event = await StoreService.getEvent(eventId);
-    if (event) {
+    Object.keys(event).forEach((key) => console.log(key))
+    if (event !== null) {
+      console.log(event)
       setEvent(event);
     } else {
       console.log("Event not found");
@@ -39,8 +41,7 @@ const EventScreen = () => {
       <Text>Location: {event.location}</Text>
       <Text>Start: {event.start_time}</Text>
       <Text>End: {event.end_time}</Text>
-      <Text>Tags: {event.tags}</Text>
-      <Text>Image URL: {event.image}</Text>
+      <Text>Tags: {JSON.stringify(event.tags)}</Text>
       <Image
         style={{width: 50, height: 50}}
         source={{

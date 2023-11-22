@@ -12,6 +12,10 @@ import AllGroupView from "./screens/AllGroupView";
 import CreateGroup from "./screens/CreateGroup";
 import GroupScreen from "./screens/Group";
 import AllUserView from "./screens/AllUserView";
+import FiltersScreen from "./screens/Filters";
+import EventTags from "./screens/EventTags";
+import { enGB, registerTranslation } from 'react-native-paper-dates'
+registerTranslation('en-GB', enGB)
 
 const RootStack = createNativeStackNavigator();
 
@@ -50,6 +54,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <RootStack.Screen
+          name='Filters'
+          component={FiltersScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
           name='GroupsView'
           component={AllGroupView}
           options={{ headerShown: false }}
@@ -67,6 +76,11 @@ export default function App() {
         <RootStack.Screen
           name='AllUsersView'
           component={AllUserView}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name='EventTags'
+          component={EventTags}
           options={{ headerShown: false }}
         />
       </RootStack.Navigator>

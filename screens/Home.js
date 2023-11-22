@@ -18,6 +18,8 @@ const Home = () => {
             <Button
               mode='contained'
               title='Login'
+              textColor="#63519f"
+              buttonColor="white"
               style={UIStyles.button}
               onPress={() => {
                 navigation.navigate("Login");
@@ -28,6 +30,8 @@ const Home = () => {
             <Button
               mode='contained'
               title='Sign up'
+              textColor="#63519f"
+              buttonColor="white"
               style={UIStyles.button}
               onPress={() => {
                 navigation.navigate("Signup");
