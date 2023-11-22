@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Button, HelperText, PaperProvider, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StoreService from "../services/StoreService";
@@ -59,12 +59,8 @@ const Signup = ({ navigation, navigation: { goBack } }) => {
   return (
     <PaperProvider>
       <WelcomeBackground>
-        <View
-          style={{
-            height: "100%",
-            margin: "10%",
-          }}>
-          <View style={{ alignItems: "flex-end" }}>
+        <View style={styles.container}>
+          <View style={styles.topbutton}>
             <TouchableOpacity onPress={() => goBack()}>
               <MaterialCommunityIcons name='home' size={30} />
             </TouchableOpacity>
@@ -109,5 +105,15 @@ const Signup = ({ navigation, navigation: { goBack } }) => {
     </PaperProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    margin: "10%",
+  },
+  topbutton: {
+    alignItems: "flex-end",
+  },
+});
 
 export default Signup;

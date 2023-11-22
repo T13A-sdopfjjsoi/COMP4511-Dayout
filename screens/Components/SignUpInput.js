@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { TextInput } from "react-native-paper";
 
 const SignUpInput = ({
@@ -10,15 +10,10 @@ const SignUpInput = ({
   children,
 }) => {
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View style={styles.container}>
       <TextInput
         theme={{ roundness: 25 }}
-        style={{
-          overflow: "hidden",
-          borderStyle: "solid",
-          borderColor: "black",
-          borderRadius: 25,
-        }}
+        style={styles.inputfield}
         label={label}
         value={value}
         onChangeText={onChangeText}
@@ -28,5 +23,17 @@ const SignUpInput = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 20,
+  },
+  inputfield: {
+    overflow: "hidden",
+    borderStyle: "solid",
+    borderColor: "black",
+    borderRadius: 25,
+  },
+});
 
 export default SignUpInput;
