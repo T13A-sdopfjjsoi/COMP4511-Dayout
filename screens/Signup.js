@@ -1,35 +1,31 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
-import {
-  Button,
-  Dialog,
-  Portal,
-  PaperProvider,
-  Text,
-  TextInput,
-} from "react-native-paper";
+import { Button, HelperText, PaperProvider, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import StoreService from "../services/StoreService";
 import WelcomeBackground from "./Components/WelcomeBackground";
+import SignUpWarning from "./Components/SignUpWarning";
+import SignUpInput from "./Components/SignUpInput";
+import AuthContainer from "./Components/AuthContainer";
 
-const Signup = ({ route, navigation, navigation: { goBack } }) => {
+const Signup = ({ navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-
   const [visible, setVisible] = useState(false);
-
   const showDialog = () => setVisible(true);
-
   const hideDialog = () => setVisible(false);
 
   const SignUpSubmit = async () => {
+    // Error handling
     if (name === "" || email === "" || password === "") {
       console.log("empty field");
       showDialog();
       return;
     }
     const ExistUser = await StoreService.getUser(email);
+
+    // If user does not exist, add user to database
     if (ExistUser === null) {
       console.log("pass");
 
@@ -56,6 +52,10 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
     }
   };
 
+  const hasErrors = () => {
+    return !email.includes("@");
+  };
+
   return (
     <PaperProvider>
       <WelcomeBackground>
@@ -70,85 +70,40 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
             </TouchableOpacity>
           </View>
           <View>
-            <Portal>
-              <Dialog visible={visible} onDismiss={hideDialog}>
-                <Dialog.Title>Error</Dialog.Title>
-                <Dialog.Content>
-                  <Text variant='bodyMedium'>
-                    {name === "" || email === "" || password === ""
-                      ? "Please enter all the fields"
-                      : "Email already exists, please use another email!"}
-                  </Text>
-                </Dialog.Content>
-                <Dialog.Actions>
-                  <Button onPress={hideDialog}>OK</Button>
-                </Dialog.Actions>
-              </Dialog>
-            </Portal>
+            <SignUpWarning
+              visible={visible}
+              hideDialog={hideDialog}
+              name={name}
+              email={email}
+              password={password}
+            />
           </View>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-            }}>
-            <View style={{ alignItems: "center" }}>
-              <Text
-                variant='displaySmall'
-                style={{ color: "white", fontWeight: "bold" }}>
-                Create Account
-              </Text>
+          <AuthContainer title='Create Account'>
+            <SignUpInput
+              label='Name'
+              value={name}
+              onChangeText={(name) => setName(name)}></SignUpInput>
+            <SignUpInput
+              label='Email'
+              value={email}
+              onChangeText={(email) => setEmail(email)}>
+              {email.includes("@") || email === "" ? null : (
+                <HelperText type='error' visible={hasErrors()}>
+                  Email address is invalid!
+                </HelperText>
+              )}
+            </SignUpInput>
+            <SignUpInput
+              label='Password'
+              value={password}
+              onChangeText={(password) => setPassword(password)}
+              secureTextEntry={true}></SignUpInput>
+            <View>
+              <Button mode='contained' onPress={() => SignUpSubmit()}>
+                Sign up
+              </Button>
             </View>
-            <View style={{ margin: "5%" }}>
-              <View style={{ marginBottom: 20 }}>
-                <TextInput
-                  theme={{ roundness: 25 }}
-                  style={{
-                    overflow: "hidden",
-                    borderStyle: "solid",
-                    borderColor: "black",
-                    borderRadius: 25,
-                  }}
-                  label='Name'
-                  value={name}
-                  onChangeText={(name) => setName(name)}
-                />
-              </View>
-              <View style={{ marginBottom: 20 }}>
-                <TextInput
-                  theme={{ roundness: 25 }}
-                  style={{
-                    overflow: "hidden",
-                    borderStyle: "solid",
-                    borderColor: "black",
-                    borderRadius: 25,
-                  }}
-                  label='Email'
-                  value={email}
-                  onChangeText={(email) => setEmail(email)}
-                />
-              </View>
-              <View style={{ marginBottom: 20 }}>
-                <TextInput
-                  theme={{ roundness: 25 }}
-                  style={{
-                    overflow: "hidden",
-                    borderStyle: "solid",
-                    borderColor: "black",
-                    borderRadius: 25,
-                  }}
-                  label='Password'
-                  value={password}
-                  onChangeText={(password) => setPassword(password)}
-                  secureTextEntry={true}
-                />
-              </View>
-              <View>
-                <Button mode='contained' onPress={() => SignUpSubmit()}>
-                  Sign up
-                </Button>
-              </View>
-            </View>
-          </View>
+          </AuthContainer>
         </View>
       </WelcomeBackground>
     </PaperProvider>
