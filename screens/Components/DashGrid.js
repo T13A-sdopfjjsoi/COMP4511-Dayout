@@ -42,11 +42,11 @@ const DashGrid = () => {
         <View style={{width:"48%", alignItems:"center"}}>
           <Text>Interested</Text>
           <View mode="contained" style={UIStyles.stack}>
-            {for (min(numberLoaded,4)) {
+            {/* {for (min(numberLoaded,4)) {
               <Image></Image>
             }
              
-             })}
+             })} */}
             <Text>Stack 1 - This will be a stack of images</Text>
           </View>
         </View>
