@@ -123,6 +123,17 @@ export default {
     }
   },
 
+  // Gets all events
+  async getEvents() {
+    try {
+      const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY);
+      const storedEvents = asyncEvents ? JSON.parse(asyncEvents) : [];
+      return storedEvents;
+    } catch (error) {
+      console.log("Failed to get events", error);
+    }
+  },
+
   // Gets event by id
   async getEvent(id) {
     try {
