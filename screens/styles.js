@@ -42,7 +42,7 @@ const UIStyles = {
     width:"100%",
     height:180,
     marginBottom: 5
-  }
+  },
 };
 
 export default UIStyles;

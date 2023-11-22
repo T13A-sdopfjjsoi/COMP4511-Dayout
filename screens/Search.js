@@ -22,7 +22,7 @@ const Search = () => {
       "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
       "location": "UNSW Anzac Parade",
-      "start_time": "1740572236424",
+      "start_time": "2740572236424",
       "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
       "tags": {"Sport": ["Soccer"]},
       "users_going": ["ben", "josh"],
@@ -42,7 +42,7 @@ const Search = () => {
       "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
       "location": "UNSW Anzac Parade",
-      "start_time": "1699593505",
+      "start_time": "1945559593505",
       "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
       "tags": {"Sport": ["Soccer"]},
       "users_going": ["ben", "josh"],
@@ -62,7 +62,7 @@ const Search = () => {
       "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
       "location": "UNSW Anzac Parade",
-      "start_time": "16995993505",
+      "start_time": "1799445993505",
       "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
       "tags": {"Sport": ["Soccer"]},
       "users_going": ["ben", "josh"],
@@ -92,16 +92,19 @@ const Search = () => {
     }
   
     if (routeSearch) {
-      setShowEvents(events.filter((event) => checkFilters(event, routeSearch)));
+      setShowEvents(events.filter((event) => checkFilters(event, routeSearch, routeFilters)));
     } else {
-      setShowEvents(events.filter((event) => checkFilters(event, "")));
+      setShowEvents(events.filter((event) => checkFilters(event, "", routeFilters)));
     }
   }, [routeFilters, routeSearch]);
 
 
-  const checkFilters = (event, query) => {
+  const checkFilters = (event, query, filters) => {
     let isFiltered = true;
-  
+    if (!filters) {
+      return isFiltered
+    }
+
     if (!event.name.includes(query)) {
       return false;
     }
@@ -138,9 +141,7 @@ const Search = () => {
     });
   
     return isFiltered;
-  };
-  
-  
+  };  
 
   const filterCount = () => {
     let count = 0
@@ -154,9 +155,8 @@ const Search = () => {
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
-    setShowEvents(events.filter((event) => (checkFilters(event, query))));
+    setShowEvents(events.filter((event) => (checkFilters(event, query, filters))));
 }
-
 
   return (
     <View>
