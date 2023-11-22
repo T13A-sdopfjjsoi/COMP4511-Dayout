@@ -13,6 +13,7 @@ import UIStyles from "./styles.js";
 import { Calendar } from "react-native-calendars";
 import { MaterialIcons } from "@expo/vector-icons";
 import ActivitiesTypes from "../data/ActivitiesType.json";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Group = ({ route, navigation, navigation: { goBack } }) => {
   const { id } = route.params ?? {};
@@ -103,6 +104,25 @@ const Group = ({ route, navigation, navigation: { goBack } }) => {
     setSelectmodelvisible(false);
     console.log(activity);
     console.log(Groupdetail.datemarked);
+    if (Groupdetail.datemarked === undefined) {
+      console.log("datemarked is undefined");
+      await StoreService.updateGroup(Groupdetail.id, {
+        ...Groupdetail,
+        datemarked: {
+          [selected]: {
+            dots: [ActivitiesTypes[activity]],
+          },
+        },
+      });
+      setDatesmarked({
+        [selected]: {
+          dots: [ActivitiesTypes[activity]],
+        },
+      });
+      setActivity("");
+      updateGroupDetail();
+      return;
+    }
     const prevdate = Groupdetail.datemarked[selected]?.dots || [];
     const newdate = {
       [selected]: {
@@ -132,27 +152,39 @@ const Group = ({ route, navigation, navigation: { goBack } }) => {
   return (
     <PaperProvider>
       <View style={{ flex: 1 }}>
-        <View
-          style={{
-            paddingTop: 60,
-            padding: 20,
-            backgroundColor: "red",
-            width: "100%",
-          }}>
-          <View style={{ alignItems: "flex-start" }}>
-            <TouchableOpacity onPress={() => goBack()}>
-              <MaterialIcons name='arrow-back' size={30} />
-            </TouchableOpacity>
-          </View>
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          colors={["#9f78f0", "#9d76bb"]}>
           <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Text
-              style={[UIStyles.titleText, { textDecorationLine: "underline" }]}>
-              {group.name}
-            </Text>
-            <Button onPress={() => LeaveGroup()}>Leave Group</Button>
+            style={{
+              paddingTop: 60,
+              padding: 20,
+              width: "100%",
+            }}>
+            <View style={{ alignItems: "flex-start" }}>
+              <TouchableOpacity onPress={() => goBack()}>
+                <MaterialIcons name='arrow-back' size={30} />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Text
+                style={[
+                  UIStyles.titleText,
+                  { textDecorationLine: "underline" },
+                ]}>
+                {group.name}
+              </Text>
+              <Button
+                buttonColor='red'
+                textColor='white'
+                onPress={() => LeaveGroup()}>
+                Leave Group
+              </Button>
+            </View>
           </View>
-        </View>
+        </LinearGradient>
         <View style={{ margin: 20 }}>
           <Portal>
             <Portal>
@@ -230,8 +262,7 @@ const Group = ({ route, navigation, navigation: { goBack } }) => {
                 disabled={selected === ""}
                 onPress={() => {
                   {
-                    group.datemarked[selected]?.dots?.length === 0 ||
-                    group.datemarked[selected]?.dots === undefined
+                    !group.datemarked
                       ? showselectDialog(selected)
                       : showcheckDialog();
                   }
