@@ -21,8 +21,10 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
         email: email,
         password: password,
         interest: [],
+        friends: [],
       });
-      if (AddUserStatus) {
+      const LoggedUser = await StoreService.assignActive(email);
+      if (AddUserStatus && LoggedUser) {
         navigation.navigate("Interests", {
           method: "signup",
           username: name,

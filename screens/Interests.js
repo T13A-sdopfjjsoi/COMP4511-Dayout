@@ -76,9 +76,11 @@ const Interests = ({ route, navigation }) => {
       username: username,
       email: email,
       password: password,
+      friends: [],
       interest: FindAllInterests(),
     });
-    if (UpdateUserStatus) {
+    const LogginUser = await StoreService.assignActive(email);
+    if (UpdateUserStatus && LogginUser) {
       navigation.navigate("Home");
     }
   };

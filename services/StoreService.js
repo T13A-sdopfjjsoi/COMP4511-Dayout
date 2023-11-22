@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 const USERS_STORE_KEY = "@users";
 const EVENTS_STORE_KEY = "@events";
 const ACTIVE_USER_KEY = "@active";
+const GROUPS_STORE_KEY = "@groups";
 
 export default {
   // Gets user with a certain username
@@ -53,7 +54,6 @@ export default {
       const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
       const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
       console.log(storedUsers);
-      console.log(email);
       const index = storedUsers.findIndex((user) => user.email === email);
 
       if (index === -1) {
@@ -64,6 +64,17 @@ export default {
       return storedUsers[index];
     } catch (error) {
       console.log("Failed to get user", error);
+    }
+  },
+
+  // get all users
+  async getAllUsers() {
+    try {
+      const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
+      const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
+      return storedUsers;
+    } catch (error) {
+      console.log("Failed to get users", error);
     }
   },
 
@@ -193,6 +204,83 @@ export default {
       return userEvents;
     } catch (error) {
       console.log("Failed to find user's events", error);
+    }
+  },
+
+  // Add a group
+  async addGroup(group) {
+    try {
+      const asyncgroups = await AsyncStorage.getItem(GROUPS_STORE_KEY);
+      const storedgroups = asyncgroups ? JSON.parse(asyncgroups) : [];
+      const groupId = uuidv4();
+      group.id = groupId;
+
+      storedgroups.push(group);
+      await AsyncStorage.setItem(
+        GROUPS_STORE_KEY,
+        JSON.stringify(storedgroups)
+      );
+      return groupId;
+    } catch (error) {
+      console.log("Failed to add group", error);
+    }
+  },
+
+  // get group detail
+  async getGroup(id) {
+    try {
+      const asyncgroups = await AsyncStorage.getItem(GROUPS_STORE_KEY);
+      const storedgroups = asyncgroups ? JSON.parse(asyncgroups) : [];
+      const index = storedgroups.findIndex((group) => group.id === id);
+
+      if (index === -1) {
+        return null;
+      }
+
+      return storedgroups[index];
+    } catch (error) {
+      console.log("Failed to get group", error);
+    }
+  },
+
+  // get all groups detail
+  async getAllGroups() {
+    try {
+      const asyncgroups = await AsyncStorage.getItem(GROUPS_STORE_KEY);
+      const storedgroups = asyncgroups ? JSON.parse(asyncgroups) : [];
+      return storedgroups;
+    } catch (error) {
+      console.log("Failed to get groups", error);
+    }
+  },
+
+  // update group detail
+  async updateGroup(id, group) {
+    try {
+      const asyncgroups = await AsyncStorage.getItem(GROUPS_STORE_KEY);
+      const storedgroups = asyncgroups ? JSON.parse(asyncgroups) : [];
+      const index = storedgroups.findIndex((group) => group.id === id);
+
+      if (index === -1) {
+        return null;
+      }
+
+      storedgroups[index] = group;
+      await AsyncStorage.setItem(
+        GROUPS_STORE_KEY,
+        JSON.stringify(storedgroups)
+      );
+    } catch (error) {
+      console.log("Failed to update group", error);
+    }
+  },
+
+  // remove all groups
+  async removeAllGroups() {
+    try {
+      await AsyncStorage.setItem(GROUPS_STORE_KEY, JSON.stringify([]));
+    } catch (error) {
+      console.log("Failed to remove groups", error);
     }
   },
 };
