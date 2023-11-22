@@ -56,6 +56,8 @@ const Main = () => {
         name='Social'
         component={SocialScreen}
         options={{
+          unmountOnBlur: true,
+          headerShown: false,
           tabBarLabel: "Social",
           tabBarIcon: ({ color, size }) => (
             <Octicons name='people' color={color} size={size} />

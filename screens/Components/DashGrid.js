@@ -1,27 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { Button, Text } from 'react-native-paper';
 import UIStyles from '../styles';
+import StoreService from '../../services/StoreService';
 
 const DashGrid = () => {
   const navigation = useNavigation();
   const events = [1,2,3,4,5,6];
-  
+  const [storedEvents, setStoredEvents] = useState([]);
+  const [eventsLoaded, setEventsLoaded] = useState(false);
+
+  useEffect(() => {
+    getStoredEvents();
+  }, []);
+
+  const getStoredEvents = async () => {
+    const storedEvents = await StoreService.getEvents();
+    setStoredEvents(storedEvents);
+    setEventsLoaded(true);
+
+    return storedEvents;
+  }
+
   return (
     <ScrollView style={{ width: '100%', height:"100%", marginBottom: 10 }}>
       <Text>For you</Text>
       <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-        {events.map((event) => (
+        {storedEvents.map((event) => (
         <Button
-          key={event} 
+          key={event.id} 
           mode='contained'
           style={UIStyles.scrollStackItem}
           onPress={() => {
-            navigation.navigate('Event', { eventId: event });
+            navigation.navigate('Event', { eventId: event.id });
           }}
         >
-          Item {event}
+          {event.name}
         </Button>
       ))}
       </ScrollView>
