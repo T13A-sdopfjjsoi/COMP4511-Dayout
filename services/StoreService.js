@@ -53,7 +53,7 @@ export default {
       console.log("getting user");
       const asyncUsers = await AsyncStorage.getItem(USERS_STORE_KEY);
       const storedUsers = asyncUsers ? JSON.parse(asyncUsers) : [];
-      console.log(storedUsers);
+      // console.log(storedUsers);
       const index = storedUsers.findIndex((user) => user.email === email);
 
       if (index === -1) {

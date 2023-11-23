@@ -9,7 +9,6 @@ import EventTypes from "../data/EventType.json";
 import { AntDesign } from "@expo/vector-icons";
 
 import { Collapsible } from "react-native-fast-collapsible";
-
 import { format } from "date-fns";
 
 import UIStyles from "./styles";

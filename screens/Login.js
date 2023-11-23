@@ -1,18 +1,31 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { Button, HelperText, PaperProvider, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import StoreService from "../services/StoreService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import WelcomeBackground from "./Components/WelcomeBackground";
+import SignUpInput from "./Components/SignUpInput";
+import LoginWarning from "./Components/LoginWarning";
+import AuthContainer from "./Components/AuthContainer";
 
-const Login = ({ route, navigation, navigation: { goBack } }) => {
+const Login = ({ navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [visible, setVisible] = useState(false);
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
 
   const LoginSubmit = async () => {
+    // Error handling
     const ExistUser = await StoreService.getUser(email);
+    if (ExistUser === null) {
+      console.log("User not found");
+      showDialog();
+      return;
+    }
+
+    // Check password
     if (ExistUser.password === password) {
       const LoggedUser = await StoreService.assignActive(email);
       if (ExistUser && LoggedUser) {
@@ -22,6 +35,10 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
           password: password,
         });
       }
+    } else {
+      console.log("Wrong password");
+      showDialog();
+      return;
     }
   };
 
@@ -30,78 +47,61 @@ const Login = ({ route, navigation, navigation: { goBack } }) => {
     console.log("Clear Storage");
   };
 
+  const hasErrors = () => {
+    return !email.includes("@");
+  };
+
   return (
-    <WelcomeBackground>
-      <View
-        style={{
-          height: "100%",
-          margin: "10%",
-        }}>
-        <View style={{ alignItems: "flex-end" }}>
-          <TouchableOpacity onPress={() => goBack()}>
-            <MaterialCommunityIcons name='home' size={30} />
-          </TouchableOpacity>
-          <Button onPress={() => clearAsyncStorage()}>
-            <Text>Clear Async Storage</Text>
-          </Button>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            // backgroundColor: "green",
-          }}>
-          <View style={{ alignItems: "center", margin: "10%" }}>
-            <Text
-              variant='displaySmall'
-              style={{ color: "white", fontWeight: "bold" }}>
-              Log In
-            </Text>
+    <PaperProvider>
+      <WelcomeBackground>
+        <View style={styles.container}>
+          <View style={styles.topbutton}>
+            <TouchableOpacity onPress={() => goBack()}>
+              <MaterialCommunityIcons name='home' size={30} />
+            </TouchableOpacity>
+            <Button onPress={() => clearAsyncStorage()}>
+              <Text>Clear Async Storage</Text>
+            </Button>
           </View>
-          <View
-            style={{
-              // backgroundColor: "yellow",
-              justifyContent: "center",
-            }}>
-            <View style={{ marginBottom: 20 }}>
-              <TextInput
-                theme={{ roundness: 25 }}
-                style={{
-                  overflow: "hidden",
-                  borderStyle: "solid",
-                  borderColor: "black",
-                  borderRadius: 25,
-                }}
-                label='Email'
-                value={email}
-                onChangeText={(email) => setEmail(email)}
-              />
-            </View>
-            <View style={{ marginBottom: 20 }}>
-              <TextInput
-                theme={{ roundness: 25 }}
-                style={{
-                  overflow: "hidden",
-                  borderStyle: "solid",
-                  borderColor: "black",
-                  borderRadius: 25,
-                }}
-                label='Password'
-                value={password}
-                onChangeText={(password) => setPassword(password)}
-                secureTextEntry={true}
-              />
-            </View>
+          <View>
+            <LoginWarning visible={visible} hideDialog={hideDialog} />
+          </View>
+          <AuthContainer title='Log In'>
+            <SignUpInput
+              label='Email'
+              value={email}
+              onChangeText={(email) => setEmail(email)}>
+              {email.includes("@") || email === "" ? null : (
+                <HelperText type='error' visible={hasErrors()}>
+                  Email address is invalid!
+                </HelperText>
+              )}
+            </SignUpInput>
+            <SignUpInput
+              label='Password'
+              value={password}
+              onChangeText={(password) => setPassword(password)}
+              secureTextEntry={true}></SignUpInput>
             <View>
               <Button mode='contained' onPress={() => LoginSubmit()}>
                 Log In
               </Button>
             </View>
-          </View>
+          </AuthContainer>
         </View>
-      </View>
-    </WelcomeBackground>
+      </WelcomeBackground>
+    </PaperProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    margin: "10%",
+  },
+  topbutton: {
+    alignItems: "flex-end",
+  },
+});
 
 export default Login;
