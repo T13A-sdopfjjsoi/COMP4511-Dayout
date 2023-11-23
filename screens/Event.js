@@ -68,6 +68,7 @@ const EventScreen = () => {
       return;
     }
 
+
     if (!event.users_going.includes(user.username)) {
       let newGoingList = event.users_going;
       newGoingList.push(user.username);
@@ -75,6 +76,7 @@ const EventScreen = () => {
         ...event,
         users_going: newGoingList
       }));
+
       updateEvent();
     }
   }
