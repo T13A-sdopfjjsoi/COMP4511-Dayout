@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback } from 'react';
+import { ScrollView, View, TouchableOpacity } from 'react-native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Button, Card, Text, Title, Paragraph } from 'react-native-paper';
 import UIStyles from '../styles';
 import StoreService from '../../services/StoreService';
@@ -11,6 +11,12 @@ const DashGrid = () => {
   const [storedEvents, setStoredEvents] = useState([]);
   const [numberLoaded, setNumberLoaded] = useState(0)
   const [eventsLoaded, setEventsLoaded] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      getStoredEvents();
+    }, [])
+  );
 
   useEffect(() => {
     getStoredEvents();
@@ -29,22 +35,16 @@ const DashGrid = () => {
       <Text>For you</Text>
       <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
         {storedEvents.map((event) => (
-          <Card style={{width:120, height : 180, margin:5}}>
-          <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
-          <Button
-              mode='contained'
-              style={UIStyles.scrollStackItem}
-              onPress={() => {
-                navigation.navigate('Event', { eventId: event.id });
-              }}
-            >
-              Item
-            </Button>
-          <Card.Content>
-            <Title>{event.name}</Title>
-            <Paragraph>{`${event.start_time} - ${event.end_time}`}</Paragraph>
-          </Card.Content>
-        </Card>
+          <TouchableOpacity onPress={() => navigation.navigate('Event', { eventId: event.id })}>
+            <Card style={{width:120, height : 180, margin:5}}>
+              <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
+              <Card.Content>
+                <Title>{event.name}</Title>
+                <Paragraph>{`${event.start_time} - ${event.end_time}`}</Paragraph>
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
+
       ))}
       </ScrollView>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginRight: 10 }}>

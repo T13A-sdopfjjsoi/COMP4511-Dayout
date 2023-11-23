@@ -43,7 +43,6 @@ const Foryou = () => {
     }
   };
 
-
   const addEventInterested = () => {
     getUser();
     if (user.username == null) {
