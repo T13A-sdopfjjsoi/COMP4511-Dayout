@@ -32,7 +32,7 @@ export default {
   async getActive() {
     try {
       const asyncUser = await AsyncStorage.getItem(ACTIVE_USER_KEY);
-      const storedUser = asyncUser ? JSON.parse(asyncUser) : {};
+      const storedUser = asyncUser ? JSON.parse(asyncUser) : null;
 
       return storedUser;
     } catch (error) {
@@ -42,7 +42,7 @@ export default {
 
   async removeActive() {
     try {
-      await AsyncStorage.setItem(ACTIVE_USER_KEY, JSON.stringify({}));
+      await AsyncStorage.setItem(ACTIVE_USER_KEY, "");
     } catch (error) {
       console.log("Failed to remove active user", error);
     }

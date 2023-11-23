@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { Searchbar, Avatar, Button, Card, Title, Paragraph, IconButton  } from 'react-native-paper';
+import { View, Text, ScrollView, Image } from "react-native";
+import { Searchbar, Avatar, Button, Card, Title, Paragraph, IconButton } from 'react-native-paper';
 import UIStyles from "./styles";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
 import { format } from "date-fns";
+import StoreService from "../services/StoreService";
 
 const Search = () => {
   const navigation = useNavigation();
@@ -14,72 +15,18 @@ const Search = () => {
   const [period, setPeriod] = useState("All time")
 
   const [searchQuery, setSearchQuery] = useState('');
-  const events = [
-    {
-      "id": "event-1234",
-      "creator": "thegardenpeople",
-      "name": "Gardene11r Wars",
-      "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
-      "location": "UNSW Anzac Parade",
-      "start_time": "2740572236424",
-      "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
-      "tags": {"Sport": ["Soccer"]},
-      "users_going": ["ben", "josh"],
-      "users_interested": ["thesnowpeople", "samuel"],
-      "rating": "5.0",
-      "comments": [
-        {
-          "id": "post-123",
-          "commenter": "thesnowpeople",
-          "content": "I LOVE GARDEN WARS SO MUCH #GARDENGANG LETS GOOOO"
-        }
-      ]
-    }, {
-      "id": "event-12553",
-      "creator": "thegardenpeople",
-      "name": "Gardene222r Wars",
-      "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
-      "location": "UNSW Anzac Parade",
-      "start_time": "1945559593505",
-      "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
-      "tags": {"Sport": ["Soccer"]},
-      "users_going": ["ben", "josh"],
-      "users_interested": ["thesnowpeople", "samuel"],
-      "rating": "5.0",
-      "comments": [
-        {
-          "id": "post-123",
-          "commenter": "thesnowpeople",
-          "content": "I LOVE GARDEN WARS SO MUCH #GARDENGANG LETS GOOOO"
-        }
-      ]
-    }, {
-      "id": "event-12663",
-      "creator": "thegardenpeople",
-      "name": "Garden33r Wars",
-      "image": "https://images.unsplash.com/photo-1418985991508-e47386d96a71",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolo.",
-      "location": "UNSW Anzac Parade",
-      "start_time": "1799445993505",
-      "end_time": "if endtime is not empty, duration of event is end-start, if is empty, then duration is all day",
-      "tags": {"Sport": ["Soccer"]},
-      "users_going": ["ben", "josh"],
-      "users_interested": ["thesnowpeople", "samuel"],
-      "rating": "5.0",
-      "comments": [
-        {
-          "id": "post-123",
-          "commenter": "thesnowpeople",
-          "content": "I LOVE GARDEN WARS SO MUCH #GARDENGANG LETS GOOOO"
-        }
-      ]
-    }
-  ]
+  const [events, setEvents] = useState([])
   const [showEvents, setShowEvents] = useState(events);
   const [filters, setFilters] = useState({start_time : new Date().getTime()});
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const events = await StoreService.getEvents();
+      setEvents(events);
+    };
+
+    fetchEvents();
+  }, [])
 
   useEffect(() => {  
     setFilters(routeFilters ? routeFilters : { start_time: new Date().getTime() });
@@ -124,13 +71,13 @@ const Search = () => {
           }
         });
       } else if (key === "start_time") {
-        const eventStartTime = parseInt(event[key]);
+        const eventStartTime = parseInt(new Date(event["date"]));
         if (eventStartTime < filters[key]) {
           isFiltered = false;
         }
       } else if (key === "end_time") {
         if (filters[key] !== -1) {
-          const eventEndTime = parseInt(event["start_time"]);
+          const eventEndTime = parseInt(new Date(event["date"]));
           if (eventEndTime > filters[key]) {
             isFiltered = false;
           }
@@ -183,10 +130,14 @@ const Search = () => {
             <Card.Content>
               <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <Title>{event.name}</Title>
-                <Text>{format(new Date(parseInt(event.start_time) * 1000), "d/MMM")}</Text>
-
+                  <Text>{format(new Date(event.date), "d/MMM")}</Text>
               </View>
-              <Paragraph numberOfLines={3}>{event.description}</Paragraph>
+              <View style={{flexDirection:"row"}}>
+                <Image style={{height : 110, width: 110, borderRadius:10}} source={{ uri: event.image }} />
+                <View style={{margin: 10, width:"60%"}}>
+                  <Text numberOfLines={6} >{event.description}</Text>
+                </View>
+              </View>
             </Card.Content>
             {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
           </Card>
