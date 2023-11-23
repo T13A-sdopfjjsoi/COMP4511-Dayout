@@ -15,7 +15,21 @@
     "Volleyball",
     "Other"
   ],
-  "Hobby": ["Photography", "Cooking", "Dancing", "Music", "Gaming", "Other"],
+  "Music": [
+    "Rock",
+    "Pop",
+    "Jazz",
+    "Classical",
+    "Country",
+    "Hip Hop",
+    "Rap",
+    "R&B",
+    "Electronic",
+    "Other"
+  ],
+  "Gaming": ["PC", "Console", "Mobile"],
+  "Dancing": ["Ballroom", "Ballet", "Tap", "Jazz", "Hip Hop"],
+  "Hobby": ["Photography", "Cooking", "Other"],
   "Arts & Culture": ["Art", "Theatre", "Museum", "Other"],
   "Social": ["Meet up", "Party", "Other"],
   "Education": ["School", "University", "Other"],
