@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import StoreService from "../services/StoreService";
@@ -46,6 +46,22 @@ const EventCreate = () => {
   };
 
   const createEvent = async () => {
+    const showAlert = () => {
+      Alert.alert(
+        'Invalid Inputs',
+        'Events must contain at least a name, date and image!',
+        [
+          { text: 'OK' },
+        ],
+        { cancelable: false }
+      );
+    }
+
+    if (!(name && date && image)) {
+      showAlert()
+      return;
+    }
+
     const newEvent = await StoreService.addEvent({
       creator: user.username,
       name,
@@ -53,6 +69,7 @@ const EventCreate = () => {
       description,
       location,
       start_time: startTime,
+      date,
       end_time: startTime,
       tags: tags,
       users_going: [],

@@ -33,12 +33,18 @@ const UIStyles = {
     marginRight: 10,
     width: 120,
     height: 150,
+    flexDirection:"row"
   },
   stack: {
     aspectRatio: 1,
     width: "100%",
-    backgroundColor:"red"
+    backgroundColor:"#c9c9c9",
+    borderRadius: 20,
+    flexDirection:"row",
+    flexWrap:"wrap",
+    overflow: "hidden"
   },
+
   searchCard: {
     width: "100%",
     height: 180,
