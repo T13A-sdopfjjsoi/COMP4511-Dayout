@@ -31,6 +31,15 @@ const DashGrid = () => {
         {storedEvents.map((event) => (
           <Card style={{width:120, height : 180, margin:5}}>
           <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
+          <Button
+              mode='contained'
+              style={UIStyles.scrollStackItem}
+              onPress={() => {
+                navigation.navigate('Event', { eventId: event.id });
+              }}
+            >
+              Item
+            </Button>
           <Card.Content>
             <Title>{event.name}</Title>
             <Paragraph>{`${event.start_time} - ${event.end_time}`}</Paragraph>
