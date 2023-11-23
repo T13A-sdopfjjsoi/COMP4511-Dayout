@@ -43,8 +43,8 @@ const Foryou = () => {
     }
   };
 
-
   const addEventInterested = () => {
+    getUser();
     if (user.username == null) {
       setCurrentEventIndex(currentEventIndex + 1);
       return;

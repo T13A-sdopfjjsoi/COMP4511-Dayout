@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Image } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback } from 'react';
+import { ScrollView, View, Image, TouchableOpacity } from 'react-native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Button, Card, Text, Title, Paragraph } from 'react-native-paper';
 import UIStyles from '../styles';
 import StoreService from '../../services/StoreService';
@@ -16,6 +16,12 @@ const DashGrid = () => {
   const [joined, setJoined] = useState([])
   const [user, setUser] = useState('')
 
+  useFocusEffect(
+    useCallback(() => {
+      getStoredEvents();
+    }, [])
+  );
+
   useEffect(() => {
     const fetchUser = async () => {
       const user = await StoreService.getActive();
@@ -29,10 +35,10 @@ const DashGrid = () => {
   const getStoredEvents = async () => {
     const storedEvents = await StoreService.getEvents();
     setStoredEvents(storedEvents);
-    setInterested(storedEvents)
     //https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
+    setInterested(storedEvents.sort((a, b) => 0.5 - Math.random()))
     setShuffled(storedEvents.sort((a, b) => 0.5 - Math.random()))
-    setJoined(storedEvents)
+    setJoined(storedEvents.sort((a, b) => 0.5 - Math.random()))
     return storedEvents;
   }
 
@@ -43,13 +49,15 @@ const DashGrid = () => {
         <Text style={{fontWeight:"bold"}}>For you</Text>
         <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
           {storedEvents.map((event) => (
-            <Card key={event.id} style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
+            <TouchableOpacity key={event.id} onPress={() => navigation.navigate('Event', { eventId: event.id })}>
+            <Card style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
             <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
             <Card.Content>
               <Title numberOfLines={1} style={{fontSize:14}}>{event.name}</Title>
               <Paragraph numberOfLines={1} style={{fontSize:12}}>{format(new Date(event.date), "do/MMM")}</Paragraph>
             </Card.Content>
           </Card>
+          </TouchableOpacity>
         ))}
         {storedEvents.length === 0 && (
           <Card key={"suggestions"} style={{justifyContent:"center", alignItems:"center", width: 120, height: 180, margin:5,}}>
@@ -60,12 +68,12 @@ const DashGrid = () => {
         )}
         </ScrollView>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginRight: 10 }}>
-          <View style={{ width: '48%', alignItems: 'center' }}>
+          <TouchableOpacity style={{ width: '48%', alignItems: 'center' }} onPress={() => navigation.navigate("Search")}>
             <Text style={{fontWeight:"bold", marginBottom: 5}}>Interested</Text>
             <View style={UIStyles.stack}>
               {(() => {
                 let stack = [];
-                for (let index = 0; index < Math.min(events.length, 4); index++) {
+                for (let index = 0; index < Math.min(interested.length, 4); index++) {
                   if (interested[index]?.image) {
                       stack.push(
                         <Image
@@ -83,13 +91,13 @@ const DashGrid = () => {
                 return stack 
               })()}
             </View>
-          </View>
-          <View style={{ width: '48%', alignItems: 'center' }}>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ width: '48%', alignItems: 'center' }} onPress={() => navigation.navigate("Search")}>
             <Text style={{fontWeight:"bold", marginBottom: 5}}>Joined</Text>
             <View style={UIStyles.stack}>
               {(() => {
                 let stack = [];
-                for (let index = 0; index < Math.min(events.length, 4); index++) {
+                for (let index = 0; index < Math.min(joined.length, 4); index++) {
                   if (joined[index]?.image) {
                       stack.push(
                         <Image
@@ -107,7 +115,7 @@ const DashGrid = () => {
                 return stack 
               })()}
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     ) : (
@@ -115,13 +123,15 @@ const DashGrid = () => {
         <Text style={{fontWeight:"bold"}}>For you</Text>
         <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
           {storedEvents.map((event) => (
-            <Card key={event.id} style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
+            <TouchableOpacity key={event.id + "fy"} onPress={() => navigation.navigate('Event', { eventId: event.id })}>
+            <Card  style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
             <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
             <Card.Content>
               <Title numberOfLines={1} style={{fontSize:14}}>{event.name}</Title>
               <Paragraph numberOfLines={1} style={{fontSize:12}}>{format(new Date(event.date), "do/MMM")}</Paragraph>
             </Card.Content>
           </Card>
+          </TouchableOpacity>
         ))}
         {storedEvents.length === 0 && (
           <Card key={"suggestions"} style={{justifyContent:"center", alignItems:"center", width: 120, height: 180, margin:5,}}>
@@ -134,13 +144,15 @@ const DashGrid = () => {
         <Text style={{fontWeight:"bold"}}>More suggestions</Text>
         <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}> 
           {shuffled.map((event) => (
-            <Card key={event.id} style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
+            <TouchableOpacity key={event.id + "ms"} onPress={() => navigation.navigate('Event', { eventId: event.id })}>
+            <Card style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
             <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
             <Card.Content>
               <Title numberOfLines={1} style={{fontSize:14}}>{event.name}</Title>
               <Paragraph numberOfLines={1} style={{fontSize:12}}>{format(new Date(event.date), "do/MMM")}</Paragraph>
             </Card.Content>
           </Card>
+          </TouchableOpacity>
         ))}
         {shuffled.length === 0 && (
           <Card key={"suggestions"} style={{justifyContent:"center", alignItems:"center", width: 120, height: 180, margin:5,}}>
