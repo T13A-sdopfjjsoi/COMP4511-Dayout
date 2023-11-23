@@ -2,40 +2,58 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, Dimensions } from "react-native";
 import Back from "./Components/Back"
 import { Button } from "react-native-paper"
-import { useRoute, useFocusEffect } from '@react-navigation/native';
+import { useRoute, useFocusEffect, useNavigation } from '@react-navigation/native';
 import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService";
 
 const EventScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const eventId = route.params?.eventId;
   const [event, setEvent] = useState({});
   const [tags, setTags] = useState([]);
   const [user, setUser] = useState({});
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [pageReload, setPageReload] = useState(0);
 
   useEffect(() => {
     getUser();
     getEvent();
-    console.log(event);
   }, []);
 
   useEffect(() => {
     getEvent();
   }, [pageReload]);
 
+  const getDays = () => {
+    const future = new Date(event.date);
+    const days = (future.getTime() - Date.now()) / (1000 * 3600 * 24);
+    return Math.round(days);
+  }
+
+  const getTime = (a) => {
+    const timeToString = a.toString();
+    const timeEdited = timeToString.slice(0, 2) + ":" + timeToString.slice(2);
+    const timeString = `${timeEdited}:00`
+    const timeString12hr = new Date('1970-01-01T' + timeString + 'Z')
+      .toLocaleTimeString('en-US',
+        {timeZone:'UTC', hour12: true, hour: 'numeric', minute: 'numeric'}
+      );
+    
+    return timeString12hr;
+  }
+
   const getEvent = async () => {
-    console.log(`Getting event: ${eventId}`);
     const event = await StoreService.getEvent(eventId);
-    Object.keys(event).forEach((key) => console.log(key))
     if (event !== null) {
-      console.log(event)
       setEvent(event);
-      setTags(Object.values(event.tags)[0])
+      setTags(Object.values(event.tags));
     } else {
-      console.log("Event not found");
       return null;
     }
+    setStartTime(getTime(event.start_time));
+    setEndTime(getTime(event.end_time));
   };
 
   const getUser = async () => {
@@ -44,15 +62,12 @@ const EventScreen = () => {
   };
 
   const joinEvent = () => {
-    console.log("Trying to add user");
     getUser();
     if (user.username == null) {
-      console.log("No user found");
       return;
     }
 
     if (!event.users_going.includes(user.username)) {
-      console.log("Updating going list");
       let newGoingList = event.users_going;
       newGoingList.push(user.username);
       setEvent(event => ({
@@ -60,21 +75,16 @@ const EventScreen = () => {
         users_going: newGoingList
       }));
       updateEvent();
-    } else {
-      console.log("User already going")
     }
   }
 
   const addEventInterested = () => {
-    console.log("Trying to add user");
     getUser();
     if (user.username == null) {
-      console.log("No user found");
       return;
     }
 
     if (!event.users_interested.includes(user.username)) {
-      console.log("Updating interested list");
       let newInterestedList = event.users_interested;
       newInterestedList.push(user.username);
       setEvent(event => ({
@@ -82,20 +92,11 @@ const EventScreen = () => {
         users_interested: newInterestedList
       }));
       updateEvent();
-    } else {
-      console.log("User already interested")
     }
   }
 
   const updateEvent = async () => {
     const eventToUpdate = await StoreService.updateEvent(event.id, event);
-    Object.keys(event).forEach((key) => console.log(key))
-    if (eventToUpdate !== null) {
-      console.log("Updated event");
-      console.log(event);
-    } else {
-      console.log("Event not found");
-    }
     setPageReload(pageReload + 1);
   };
 
@@ -116,24 +117,33 @@ const EventScreen = () => {
           margin: "3%"
         }}
       >
-        <Text>Event {eventId}</Text>
-        <Text style={[UIStyles.titleText, { fontWeight: 'bold', color: "black" }]}>{event.name}</Text>
-        {/* {tags.map((label) => (
-          <Text>{tag}</Text>
-        ))} */}
+        <Text>
+          <Text style={[UIStyles.titleText, { fontWeight: 'bold', color: "black" }]}>{event.name}</Text>
+        </Text>
+        <Text>Created by <Text style={{textDecorationLine: 'underline'}}>{event.creator}</Text></Text>
+        <Text>Attendees: {event.users_going?.length}</Text>
+        <Text>Interested: {event.users_interested?.length}</Text>
+        <Text style={{textAlign: "right"}}>Starts in {getDays()} days</Text>
+        <Text style={{textAlign: "right"}}>{startTime} - {endTime}</Text>
+        <Text style={{textAlign: "right"}}>{event.location}</Text><br/>
+        <View
+          style={{
+            borderBottomColor: 'black',
+            borderBottomWidth: 1,
+          }}
+        /> <br/>
 
-        <Text>Tags using wrong data strcuture</Text>
+        <View style={{flexDirection: 'row'}}>
+          {tags.map((tag) => (
+            tag.map((itag) => (
+              <Button style={{marginRight:5}} buttonColor="#9474f1" textColor="white"
+              onPress={() => navigation.navigate('Search')}
+            >{itag}</Button>
+            ))
+          ))}
+        </View> <br/>
+        <Text style={{fontSize: 20}}>{event.description}</Text>
 
-
-
-        
-        <Text>Created by {event.creator}</Text>
-        <Text>{event.description}</Text>
-        <Text>Location: {event.location}</Text>
-        <Text>Start: {event.start_time}</Text>
-        <Text>End: {event.end_time}</Text>
-        <Text>Going: {event.users_going}</Text>
-        <Text>Interested: {event.users_interested}</Text>
         <Button onPress={() => joinEvent()}>Join Event</Button>
         <Button onPress={() => addEventInterested()}>Interested</Button>
       </View>

@@ -23,6 +23,7 @@ const Search = () => {
     const fetchEvents = async () => {
       const events = await StoreService.getEvents();
       setEvents(events);
+      setShowEvents(events);
     };
 
     fetchEvents();
@@ -106,22 +107,22 @@ const Search = () => {
 }
 
   return (
-    <View>
-    <Searchbar
-      style={{margin:15, marginBottom:10}}
-      placeholder="Search"
-      onChangeText={onChangeSearch}
-      value={searchQuery}
-    />
-    <View style={{flexDirection: 'row', alignItems:"center", justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginBottom: 10}}>
-      <View style={{flexDirection: 'row', alignItems:"center"}}>
-        <Button style={{width:100, marginRight:5}} buttonColor="#63519f" textColor="white"
-          onPress={() => navigation.navigate('Filters', { filters: filters })}
-        >Fitlers</Button>
-        <Text>{filterCount()} filters</Text>
+    <View style={{flex: 1}}>
+      <Searchbar
+        style={{margin:15, marginBottom:10}}
+        placeholder="Search"
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+      />
+      <View style={{flexDirection: 'row', alignItems:"center", justifyContent: 'space-between', marginLeft: 15, marginRight: 15, marginBottom: 10}}>
+        <View style={{flexDirection: 'row', alignItems:"center"}}>
+          <Button style={{width:100, marginRight:5}} buttonColor="#63519f" textColor="white"
+            onPress={() => navigation.navigate('Filters', { filters: filters })}
+          >Filters</Button>
+          <Text>{filterCount()} filters</Text>
+        </View>
+        <Text>{period}</Text>
       </View>
-      <Text>{period}</Text>
-    </View>
 
       <ScrollView style={{width:"100%", paddingLeft: 20, paddingRight: 20}}>
         {showEvents.map((event) => (
