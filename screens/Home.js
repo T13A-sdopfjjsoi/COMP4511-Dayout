@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import UIStyles from "./styles.js";
 import DashGrid from "./Components/DashGrid.js";
 import StoreService from "../services/StoreService.js";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Home = () => {
   const [user, setUser] = useState('')
@@ -22,9 +23,20 @@ const Home = () => {
   return (
     <View style={{ flex: 1 }}>
       {!user ? (
-        <View style={UIStyles.header}>
-          <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome!</Text>
-          <View style={UIStyles.buttonContainer}>
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          colors={["#9f78f0", "#9d76bb"]}>
+          <View
+            style={{
+              paddingTop: 60,
+              padding: 20,
+            }}>
+            <Text
+              style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
+              Please
+            </Text>
+            <View style={UIStyles.buttonContainer}>
             <Button
               mode='contained'
               title='Login'
@@ -49,12 +61,32 @@ const Home = () => {
               Sign up
             </Button>
           </View>
-        </View>
+          </View>
+        </LinearGradient>
       ) : (
-        <View style={UIStyles.header}>
-          <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome back</Text>
-          <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>{user.username}</Text>
-        </View>
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          colors={["#9f78f0", "#9d76bb"]}>
+          <View
+            style={{
+              paddingTop: 60,
+              padding: 20,
+            }}>
+            <Text
+              style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
+              Welcome back
+            </Text>
+            <Text
+              style={{
+                fontSize: 30,
+                color: "#ffffff",
+                textDecorationLine: "underline",
+              }}>
+              {user.username}
+            </Text>
+          </View>
+        </LinearGradient>
       )}
 
       <View style={UIStyles.dashContent}>
