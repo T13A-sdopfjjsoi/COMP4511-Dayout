@@ -57,13 +57,15 @@ const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
           <Button onPress={() => removegroups()}>Remove Groups</Button>
           <Button onPress={() => seeallgroups()}>All Groups</Button>
         </View>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center", margin: 10 }}>
           <Text
             variant='displaySmall'
             style={{ color: "white", fontWeight: "bold" }}>
             Discover Groups
           </Text>
-          <Button onPress={() => navigation.navigate("CreateGroup")}>
+          <Button
+            onPress={() => navigation.navigate("CreateGroup")}
+            buttonColor='white'>
             Create You Own Group
           </Button>
         </View>
@@ -71,8 +73,8 @@ const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
           {groups.map((group, idx) => (
             <View style={{ margin: "2%" }} key={idx}>
               <Card>
-                <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
-                <Card.Title title={group.title} subtitle={group.subtitle} />
+                <Card.Cover source={{ uri: `https://picsum.photos/7${idx}` }} />
+                <Card.Title title={group.name} subtitle={group.subtitle} />
                 <Card.Actions>
                   <Button
                     disabled={(group.members || []).includes(Activeusername)}

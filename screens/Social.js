@@ -1,22 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import { Button, Text } from "react-native-paper";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import UIStyles from "./styles.js";
+import { View } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import StoreService from "../services/StoreService.js";
-import WelcomeBackground from "./Components/WelcomeBackground.js";
-import { LinearGradient } from "expo-linear-gradient";
+import SocialFriendComponent from "./Components/SocialFriendComponent.js";
+import SocialGroupComponent from "./Components/SocialGroupComponent.js";
+import SocialTopBar from "./Components/SocialTopBar.js";
 
 const Social = () => {
-  const navigation = useNavigation();
-  const [currentusername, setCurrentUsername] = useState("");
   const [LoggedUser, setLoggedUser] = useState({});
-  const [temp, setTemp] = useState({});
   const [ActiveUser, setActiveUser] = useState(null);
   const [groups, setGroups] = useState([]);
   const [friends, setFriends] = useState([]);
@@ -25,14 +16,10 @@ const Social = () => {
     console.log(
       "fetching data--------------------------------------------------------------"
     );
-
     console.log("LoggedUser", LoggedUser);
-
-    setCurrentUsername(LoggedUser.username);
-
     const allGroups = await StoreService.getAllGroups();
     console.log("Mynameis", LoggedUser.username);
-    console.log("Groupsss", allGroups);
+    // console.log("Groupsss", allGroups);
 
     setGroups(
       allGroups.filter((group) => group.members.includes(LoggedUser.username))
@@ -101,203 +88,13 @@ const Social = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {!ActiveUser?.username ? (
-        <View
-          style={{
-            paddingTop: 60,
-            padding: 20,
-            width: "100%",
-          }}>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={["#9f78f0", "#9d76bb"]}>
-            <Text
-              style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
-              Welcome!
-            </Text>
-            <View style={UIStyles.buttonContainer}>
-              <Button
-                mode='contained'
-                title='Login'
-                style={UIStyles.button}
-                onPress={() => {
-                  navigation.navigate("Login");
-                }}>
-                Log in
-              </Button>
-              <Text style={UIStyles.titleText}>or </Text>
-              <Button
-                mode='contained'
-                title='Sign up'
-                style={UIStyles.button}
-                onPress={() => {
-                  navigation.navigate("Signup");
-                }}>
-                Sign up
-              </Button>
-            </View>
-          </LinearGradient>
-        </View>
-      ) : (
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          colors={["#9f78f0", "#9d76bb"]}>
-          <View
-            style={{
-              paddingTop: 60,
-              padding: 20,
-            }}>
-            <Text
-              style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
-              Social Your Way
-            </Text>
-            <Text
-              style={{
-                fontSize: 30,
-                color: "#ffffff",
-                textDecorationLine: "underline",
-              }}>
-              {ActiveUser.username}
-            </Text>
-          </View>
-        </LinearGradient>
-      )}
-      <View style={{ margin: 10 }}>
-        {!ActiveUser ? (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}>
-            <Text variant='displaySmall'>Please login to continue</Text>
-          </View>
-        ) : (
-          <ScrollView style={{ marginBottom: 10 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginRight: 5,
-              }}>
-              <Text variant='titleLarge'>Groups</Text>
-              <Button
-                onPress={() => navigation.navigate("GroupsView", ActiveUser)}
-                mode='contained'>
-                + Join Group
-              </Button>
-            </View>
-            {groups.length === 0 ? (
-              // Render this when groups is an empty array
-              <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Text>Join a group</Text>
-              </View>
-            ) : (
-              // Render this when groups is not an empty array
-              <ScrollView
-                horizontal={true}
-                contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-                {groups.map((group, idx) => (
-                  <TouchableOpacity
-                    key={group.id}
-                    mode='contained'
-                    style={{
-                      width: 150,
-                      height: 150,
-                      margin: 5,
-                      borderRadius: 15,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                    onPress={() =>
-                      navigation.navigate("Group", { id: group.id })
-                    }>
-                    <ImageBackground
-                      source={{ uri: `https://picsum.photos/7${idx}` }}
-                      imageStyle={{ borderRadius: 15 }}
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}>
-                      <Text
-                        style={{
-                          color: "white",
-                          fontSize: 24,
-                          fontWeight: "bold",
-                          textAlign: "center",
-                          backgroundColor: "#000000a0",
-                        }}>
-                        {group.name}
-                      </Text>
-                    </ImageBackground>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
-          </ScrollView>
-        )}
-      </View>
-
-      {!ActiveUser ? (
-        <></>
-      ) : (
-        <View style={{ flex: 1, margin: 10 }}>
-          <ScrollView>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}>
-              <Text variant='titleLarge'>Friends</Text>
-              <Button
-                mode='contained'
-                onPress={() => navigation.navigate("AllUsersView")}>
-                + Add Friend
-              </Button>
-            </View>
-            {/* // If friends is empty array, show nothing, else show list of friends */}
-            {friends.length === 0 ? (
-              <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Text>Add a friend</Text>
-              </View>
-            ) : (
-              <ScrollView
-                contentContainerStyle={{
-                  flexGrow: 1,
-                  marginBottom: 10,
-                  margin: "5%",
-                }}>
-                {friends?.map((friend) => (
-                  <TouchableOpacity key={friend} mode='contained'>
-                    <View
-                      style={{
-                        height: 50,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        backgroundColor: "#bdbdbd",
-                        borderRadius: 15,
-                        padding: 5,
-                        margin: 5,
-                      }}>
-                      <Text variant='titleMedium'>{friend}</Text>
-                      <Button onPress={() => RemoveFriend(friend)}>
-                        Remove
-                      </Button>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
-          </ScrollView>
-        </View>
-      )}
+      <SocialTopBar ActiveUser={ActiveUser} />
+      <SocialGroupComponent ActiveUser={ActiveUser} groups={groups} />
+      <SocialFriendComponent
+        ActiveUser={ActiveUser}
+        friends={friends}
+        RemoveFriend={RemoveFriend}
+      />
     </View>
   );
 };
