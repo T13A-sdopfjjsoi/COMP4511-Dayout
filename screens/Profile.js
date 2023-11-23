@@ -11,23 +11,12 @@ const Profile = () => {
   const navigation = useNavigation();
   const [user, setUser] = useState("");
   const [events, setEvents] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const user = await StoreService.getActive();
-  //     setUser(user);
-
-  //     (user.username && (
-  //       setEvents(await StoreService.getUsersEvents(user.username))
-  //     ))
-  //   };
-
-  //   fetchData();
-  // }, []);
+  const [joined, setJoined] = useState([]);
 
   const fetchevents = async () => {
     user?.username &&
       setEvents(await StoreService.getUsersEvents(user.username));
+      setJoined(storedEvents.filter((event) => event["users_going"].includes(user.username)));
   };
 
   useFocusEffect(
@@ -71,7 +60,21 @@ const Profile = () => {
         </View>
       ) : (
         <>
+          <View style={{flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
           <Text style={UIStyles.blackTitleText}>{user.username}'s Profile</Text>
+          <Button
+            mode='contained'
+            title='Create Event'
+            buttonColor='red'
+            onPress={() => {
+              StoreService.removeActive();
+
+              reload();
+            }}>
+            Log Out
+          </Button>
+          </View>
+          <View>
           <Text style={{ fontWeight: "bold" }}>Your Events</Text>
           <ScrollView
             horizontal={true}
@@ -117,18 +120,38 @@ const Profile = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <Button
-            mode='contained'
-            title='Create Event'
-            buttonColor='red'
-            style={{ margin: 10 }}
-            onPress={() => {
-              StoreService.removeActive();
-
-              reload();
-            }}>
-            Log Out
-          </Button>
+          <Text style={{ fontWeight: "bold" }}>Joined Events</Text>
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
+            {events.map((event) => (
+              <TouchableOpacity
+                key={event.id}
+                onPress={() =>
+                  navigation.navigate("Event", { eventId: event.id })
+                }>
+                <Card
+                  style={{ width: 120, height: 180, margin: 5 }}
+                  onPress={() =>
+                    navigation.navigate("Event", { eventId: event.id })
+                  }>
+                  <Card.Cover
+                    style={{ height: 110 }}
+                    source={{ uri: event.image }}
+                  />
+                  <Card.Content>
+                    <Title numberOfLines={1} style={{ fontSize: 14 }}>
+                      {event.name}
+                    </Title>
+                    <Paragraph numberOfLines={1} style={{ fontSize: 12 }}>
+                      {format(new Date(event.date), "do/MMM")}
+                    </Paragraph>
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          </View>
         </>
       )}
     </View>
