@@ -1,18 +1,31 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { Button, HelperText, PaperProvider, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import StoreService from "../services/StoreService";
 import WelcomeBackground from "./Components/WelcomeBackground";
+import SignUpWarning from "./Components/SignUpWarning";
+import SignUpInput from "./Components/SignUpInput";
+import AuthContainer from "./Components/AuthContainer";
 
-const Signup = ({ route, navigation, navigation: { goBack } }) => {
+const Signup = ({ navigation, navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [visible, setVisible] = useState(false);
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
 
   const SignUpSubmit = async () => {
+    // Error handling
+    if (name === "" || email === "" || password === "") {
+      console.log("empty field");
+      showDialog();
+      return;
+    }
     const ExistUser = await StoreService.getUser(email);
+
+    // If user does not exist, add user to database
     if (ExistUser === null) {
       console.log("pass");
 
@@ -32,87 +45,75 @@ const Signup = ({ route, navigation, navigation: { goBack } }) => {
           password: password,
         });
       }
+    } else {
+      console.log("Same user email found");
+      showDialog();
+      return;
     }
   };
 
+  const hasErrors = () => {
+    return !email.includes("@");
+  };
+
   return (
-    <WelcomeBackground>
-      <View
-        style={{
-          height: "100%",
-          margin: "10%",
-        }}>
-        <View style={{ alignItems: "flex-end" }}>
-          <TouchableOpacity onPress={() => goBack()}>
-            <MaterialCommunityIcons name='home' size={30} />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-          }}>
-          <View style={{ alignItems: "center" }}>
-            <Text
-              variant='displaySmall'
-              style={{ color: "white", fontWeight: "bold" }}>
-              Create Account
-            </Text>
+    <PaperProvider>
+      <WelcomeBackground>
+        <View style={styles.container}>
+          <View style={styles.topbutton}>
+            <TouchableOpacity onPress={() => goBack()}>
+              <MaterialCommunityIcons name='home' size={30} />
+            </TouchableOpacity>
           </View>
-          <View style={{ margin: "5%" }}>
-            <View style={{ marginBottom: 20 }}>
-              <TextInput
-                theme={{ roundness: 25 }}
-                style={{
-                  overflow: "hidden",
-                  borderStyle: "solid",
-                  borderColor: "black",
-                  borderRadius: 25,
-                }}
-                label='Name'
-                value={name}
-                onChangeText={(name) => setName(name)}
-              />
-            </View>
-            <View style={{ marginBottom: 20 }}>
-              <TextInput
-                theme={{ roundness: 25 }}
-                style={{
-                  overflow: "hidden",
-                  borderStyle: "solid",
-                  borderColor: "black",
-                  borderRadius: 25,
-                }}
-                label='Email'
-                value={email}
-                onChangeText={(email) => setEmail(email)}
-              />
-            </View>
-            <View style={{ marginBottom: 20 }}>
-              <TextInput
-                theme={{ roundness: 25 }}
-                style={{
-                  overflow: "hidden",
-                  borderStyle: "solid",
-                  borderColor: "black",
-                  borderRadius: 25,
-                }}
-                label='Password'
-                value={password}
-                onChangeText={(password) => setPassword(password)}
-                secureTextEntry={true}
-              />
-            </View>
+          <View>
+            <SignUpWarning
+              visible={visible}
+              hideDialog={hideDialog}
+              name={name}
+              email={email}
+              password={password}
+            />
+          </View>
+          <AuthContainer title='Create Account'>
+            <SignUpInput
+              label='Name'
+              value={name}
+              onChangeText={(name) => setName(name)}></SignUpInput>
+            <SignUpInput
+              label='Email'
+              value={email}
+              onChangeText={(email) => setEmail(email)}>
+              {email.includes("@") || email === "" ? null : (
+                <HelperText type='error' visible={hasErrors()}>
+                  Email address is invalid!
+                </HelperText>
+              )}
+            </SignUpInput>
+            <SignUpInput
+              label='Password'
+              value={password}
+              onChangeText={(password) => setPassword(password)}
+              secureTextEntry={true}></SignUpInput>
             <View>
               <Button mode='contained' onPress={() => SignUpSubmit()}>
                 Sign up
               </Button>
             </View>
-          </View>
+          </AuthContainer>
         </View>
-      </View>
-    </WelcomeBackground>
+      </WelcomeBackground>
+    </PaperProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    margin: "10%",
+  },
+  topbutton: {
+    alignItems: "flex-end",
+  },
+});
 
 export default Signup;
