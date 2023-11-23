@@ -7,9 +7,10 @@ import {
 } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService.js";
+import WelcomeBackground from "./Components/WelcomeBackground.js";
 import { LinearGradient } from "expo-linear-gradient";
-import LoginSignup from "./Components/LoginSignup.js";
 
 const Social = () => {
   const navigation = useNavigation();
@@ -100,7 +101,45 @@ const Social = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {ActiveUser?.username && (
+      {!ActiveUser?.username ? (
+        <View
+          style={{
+            paddingTop: 60,
+            padding: 20,
+            width: "100%",
+          }}>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={["#9f78f0", "#9d76bb"]}>
+            <Text
+              style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
+              Welcome!
+            </Text>
+            <View style={UIStyles.buttonContainer}>
+              <Button
+                mode='contained'
+                title='Login'
+                style={UIStyles.button}
+                onPress={() => {
+                  navigation.navigate("Login");
+                }}>
+                Log in
+              </Button>
+              <Text style={UIStyles.titleText}>or </Text>
+              <Button
+                mode='contained'
+                title='Sign up'
+                style={UIStyles.button}
+                onPress={() => {
+                  navigation.navigate("Signup");
+                }}>
+                Sign up
+              </Button>
+            </View>
+          </LinearGradient>
+        </View>
+      ) : (
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -133,8 +172,8 @@ const Social = () => {
               alignItems: "center",
               height: "100%",
             }}>
-            <LoginSignup />         
-        </View>
+            <Text variant='displaySmall'>Please login to continue</Text>
+          </View>
         ) : (
           <ScrollView style={{ marginBottom: 10 }}>
             <View

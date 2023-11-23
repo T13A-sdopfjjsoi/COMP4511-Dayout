@@ -16,18 +16,13 @@ const DashGrid = () => {
   const [joined, setJoined] = useState([])
   const [user, setUser] = useState('')
 
-  useFocusEffect(
-    useCallback(() => {
-      getStoredEvents();
-    }, [])
-  );
-
-  useEffect(() => {
+  useEffect(() => { 
     const fetchUser = async () => {
       const user = await StoreService.getActive();
       setUser(user);
+
+      await getStoredEvents();
     };
-    getStoredEvents();
     fetchUser();
   }, []);
 
