@@ -10,16 +10,16 @@ const SocialTopBar = ({ ActiveUser }) => {
   return (
     <>
       {!ActiveUser?.username ? (
-        <View
-          style={{
-            paddingTop: 60,
-            padding: 20,
-            width: "100%",
-          }}>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={["#9f78f0", "#9d76bb"]}>
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          colors={["#9f78f0", "#9d76bb"]}>
+          <View
+            style={{
+              paddingTop: 60,
+              padding: 20,
+              width: "100%",
+            }}>
             <Text
               style={{ fontSize: 30, color: "#ffffff", fontWeight: "bold" }}>
               Welcome!
@@ -45,8 +45,8 @@ const SocialTopBar = ({ ActiveUser }) => {
                 Sign up
               </Button>
             </View>
-          </LinearGradient>
-        </View>
+          </View>
+        </LinearGradient>
       ) : (
         <LinearGradient
           start={{ x: 0, y: 0 }}
