@@ -8,10 +8,14 @@ const UIStyles = {
     fontSize: 30,
     color: "white",
   },
+  blackTitleText: {
+    fontSize: 30,
+    color: 'black',
+  },
   header: {
     paddingTop: 60,
     padding: 20,
-    backgroundColor: "red",
+    backgroundColor: "#63519f",
     width: "100%",
   },
   buttonContainer: {
@@ -33,6 +37,7 @@ const UIStyles = {
   stack: {
     aspectRatio: 1,
     width: "100%",
+    backgroundColor:"red"
   },
   searchCard: {
     width: "100%",

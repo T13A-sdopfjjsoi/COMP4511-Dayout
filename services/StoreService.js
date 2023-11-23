@@ -139,7 +139,8 @@ export default {
     try {
       const asyncEvents = await AsyncStorage.getItem(EVENTS_STORE_KEY);
       const storedEvents = asyncEvents ? JSON.parse(asyncEvents) : [];
-      const index = storedEvents.findIndex((event) => event.id === id);
+
+      const index = storedEvents.findIndex((event) => event.id == id);
 
       if (index === -1) {
         return null;
@@ -181,7 +182,6 @@ export default {
       event.id = eventId;
 
       storedEvents.push(event);
-
       await AsyncStorage.setItem(
         EVENTS_STORE_KEY,
         JSON.stringify(storedEvents)
@@ -283,4 +283,17 @@ export default {
       console.log("Failed to remove groups", error);
     }
   },
+
+  async clearAllData() {
+    try {
+      await AsyncStorage.setItem(USERS_STORE_KEY, "");
+      await AsyncStorage.setItem(EVENTS_STORE_KEY, "");
+      await AsyncStorage.setItem(ACTIVE_USER_KEY, "");
+      await AsyncStorage.setItem(GROUPS_STORE_KEY, "");
+  
+      console.log("All data cleared successfully");
+    } catch (error) {
+      console.log("Failed to clear all data", error);
+    }
+  }
 };
