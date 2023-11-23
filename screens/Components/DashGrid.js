@@ -32,7 +32,7 @@ const DashGrid = () => {
       <Text style={{fontWeight:"bold"}}>For you</Text>
       <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
         {storedEvents.map((event) => (
-          <Card style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", event.id)}>
+          <Card key={event.id} style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
           <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
           <Card.Content>
             <Title numberOfLines={1} style={{fontSize:14}}>{event.name}</Title>
@@ -86,7 +86,6 @@ const DashGrid = () => {
               if (stack.length === 0) {
                 stack = ([<Text key="noJoined">No Joined Events</Text>]);
               }
-              console.log(stack)
               return stack 
             })()}
           </View>

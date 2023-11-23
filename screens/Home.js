@@ -14,8 +14,6 @@ const Home = () => {
     const fetchUser = async () => {
       const user = await StoreService.assignActive();
       setUser(user);
-      console.log("ass")
-
     };
 
     fetchUser();
