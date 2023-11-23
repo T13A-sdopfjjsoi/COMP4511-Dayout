@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView, Image } from "react-native";
 import { Searchbar, Avatar, Button, Card, Title, Paragraph, IconButton } from 'react-native-paper';
 import UIStyles from "./styles";
@@ -19,16 +19,17 @@ const Search = () => {
   const [showEvents, setShowEvents] = useState(events);
   const [filters, setFilters] = useState({start_time : new Date().getTime()});
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const events = await StoreService.getEvents();
-      setEvents(events);
-      setShowEvents(events);
-    };
-
-    fetchEvents();
-  }, [])
-
+  useFocusEffect(
+    useCallback(() => {
+      const fetchEvents = async () => {
+        const events = await StoreService.getEvents();
+        setEvents(events);
+      };
+  
+      fetchEvents();
+    }, [])
+  );
+  
   useEffect(() => {  
     setFilters(routeFilters ? routeFilters : { start_time: new Date().getTime() });
     setSearchQuery(routeSearch ? routeSearch : '');

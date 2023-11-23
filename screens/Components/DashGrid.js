@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { ScrollView, View, Image, TouchableOpacity } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Button, Card, Text, Title, Paragraph } from "react-native-paper";
@@ -15,16 +15,6 @@ const DashGrid = () => {
 
   const [joined, setJoined] = useState([]);
   const [user, setUser] = useState("");
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const user = await StoreService.getActive();
-  //     setUser(user);
-
-  //     await getStoredEvents();
-  //   };
-  //   fetchUser();
-  // }, []);
 
   useFocusEffect(
     useCallback(() => {
