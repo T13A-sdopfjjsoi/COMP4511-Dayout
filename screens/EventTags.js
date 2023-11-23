@@ -136,7 +136,24 @@ const EventTags = () => {
         </View>
       ))}
       <Button onPress={goBack}>Save Tags</Button>
-      <Text>{JSON.stringify(filters)}</Text>
+       <View style={{justifyContent:"center", width:"100%" }}>
+        <Text style={{fontWeight:"bold", textAlign: 'center', margin: 5}}>
+        {(() => {
+          let count = 0;
+          if (filters.tags) {
+            Object.keys(filters.tags).forEach((key) => {
+              count += filters.tags[key].length;
+            });
+            if (count === 1) {
+              return count + " tag applied";
+            }
+            return count + " tags applied";
+          } else {
+            return "No tags applied";
+          }
+        })()}
+        </Text>
+        </View>
 
     </ScrollView>
   );

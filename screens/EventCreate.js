@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { DatePickerModal } from 'react-native-paper-dates';
 import StoreService from "../services/StoreService";
 import Back from "./Components/Back"
+import { format } from "date-fns";
 
 const EventCreate = () => {
   const navigation = useNavigation();
@@ -14,13 +16,27 @@ const EventCreate = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(undefined);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const intitialTags = route.params?.filters 
   const [tags, setTags] = useState({})
+  const [open, setOpen] = useState(false)
 
   const [user, setUser] = useState({});
+
+  // https://web-ridge.github.io/react-native-paper-dates/docs/date-picker/single-date-picker
+  const onDismiss = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const onConfirm = React.useCallback(
+    (params) => {
+      setOpen(false);
+      setDate(params.date);
+    },
+    [setOpen, setDate]
+  );
 
   useEffect(() => {
     getUser();
@@ -46,16 +62,31 @@ const EventCreate = () => {
   };
 
   const createEvent = async () => {
-    const startDate = Date.parse(`${date} ${startTime.slice(0, 2) + ":" + startTime.slice(2)}`, "dd-MM-yyyy HH:mm");
-    const endDate = Date.parse(`${date} ${endTime.slice(0, 2) + ":" + endTime.slice(2)}`, "dd-MM-yyyy HH:mm");
+    const showAlert = () => {
+      Alert.alert(
+        'Invalid Inputs',
+        'Events must contain at least a name, start time and image!',
+        [
+          { text: 'OK' },
+        ],
+        { cancelable: false }
+      );
+    }
+
+    if (!(name && date && image)) {
+      showAlert()
+      return;
+    }
+
     const newEvent = await StoreService.addEvent({
       creator: user.username,
       name,
       image,
       description,
       location,
-      start_time: startDate,
-      end_time: endDate,
+      date,
+      start_time: startTime,
+      end_time: endTime,
       tags: tags,
       users_going: [],
       users_interested: [],
@@ -118,18 +149,7 @@ const EventCreate = () => {
           value={location}
           onChangeText={(location) => setLocation(location)}
         />
-        <TextInput
-          theme={{ roundness: 25 }}
-          style={{
-            overflow: "hidden",
-            borderStyle: "solid",
-            borderColor: "black",
-            borderRadius: 25,
-          }}
-          label='Event Date (enter as dd/mm/yyyy)'
-          value={date}
-          onChangeText={(date) => setDate(date)}
-        />
+
         <TextInput
           theme={{ roundness: 25 }}
           style={{
@@ -154,9 +174,21 @@ const EventCreate = () => {
           value={endTime}
           onChangeText={(endTime) => setEndTime(endTime)}
         />
+
         <Button onPress={pickImage} icon="view-gallery">Pick an image</Button>
         <Button onPress={navigateToEventTags}>Add Tags</Button>
       </View>
+      <Button onPress={() => setOpen(true)} mode="outlined">
+        {date ? format(date, "do/MMM/yyyy") : "Pick Date"}
+      </Button>
+      <DatePickerModal
+        locale="en-GB"
+        mode="single"
+        visible={open}
+        onDismiss={onDismiss}
+        date={date}
+        onConfirm={onConfirm}
+      />
       <View>
         <Button
           mode="contained"
@@ -164,7 +196,22 @@ const EventCreate = () => {
         >
           Create Event +
         </Button>
-        <Text style={{fontWeight:"bold"}}>Either delete or make this prettier -{">"} {JSON.stringify(tags)}</Text>
+        <View style={{justifyContent:"center", width:"100%" }}>
+        <Text style={{fontWeight:"bold", textAlign: 'center', margin: 5}}>
+        {
+          (() => {
+            let count = 0;
+            Object.keys(tags).forEach((key) => {
+              count += tags[key].length;
+            });
+            if (count === 1) { 
+              return count + " tag applied"
+            }
+            return count + " tags applied"
+          })()
+        }
+        </Text>
+        </View>
       </View>
     </View>
   );
