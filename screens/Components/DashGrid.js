@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Image } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback } from 'react';
+import { ScrollView, View, Image, TouchableOpacity } from 'react-native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Button, Card, Text, Title, Paragraph } from 'react-native-paper';
 import UIStyles from '../styles';
 import StoreService from '../../services/StoreService';
@@ -13,6 +13,12 @@ const DashGrid = () => {
   const [interested, setInterested] = useState([])
   const [joined, setJoined] = useState([])
 
+
+  useFocusEffect(
+    useCallback(() => {
+      getStoredEvents();
+    }, [])
+  );
 
   useEffect(() => {
     getStoredEvents();
@@ -32,13 +38,15 @@ const DashGrid = () => {
       <Text style={{fontWeight:"bold"}}>For you</Text>
       <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
         {storedEvents.map((event) => (
-          <Card key={event.id} style={{width: 120, height: 180, margin:5,}} onPress={()=>navigation.navigate("Event", {eventId: event.id })}>
-          <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
-          <Card.Content>
-            <Title numberOfLines={1} style={{fontSize:14}}>{event.name}</Title>
-            <Paragraph numberOfLines={1} style={{fontSize:12}}>{event.date}</Paragraph>
-          </Card.Content>
-        </Card>
+          <TouchableOpacity onPress={() => navigation.navigate('Event', { eventId: event.id })}>
+            <Card style={{width:120, height : 180, margin:5}}>
+              <Card.Cover style={{height : 110}} source={{ uri: event.image }} />
+              <Card.Content>
+                <Title>{event.name}</Title>
+                <Paragraph>{`${event.start_time} - ${event.end_time}`}</Paragraph>
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
       ))}
       </ScrollView>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginRight: 10 }}>
