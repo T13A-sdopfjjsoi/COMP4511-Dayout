@@ -53,9 +53,11 @@ const Social = () => {
     (async () => {
       // updateScreen();
       console.log("Mid check", LoggedUser);
-      if (Object.keys(LoggedUser).length > 0) {
-        fetchData();
-        updateActiveUser();
+      if (LoggedUser !== null) {
+        if (Object.keys(LoggedUser).length > 0) {
+          fetchData();
+          updateActiveUser();
+        }
       }
     })();
   }, [LoggedUser]);
