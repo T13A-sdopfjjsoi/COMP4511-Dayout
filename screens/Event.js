@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button, View, Text, Image, Dimensions } from "react-native";
+import { View, Text, Image, Dimensions } from "react-native";
 import Back from "./Components/Back"
+import { Button } from "react-native-paper"
 import { useRoute, useFocusEffect } from '@react-navigation/native';
 import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService";
@@ -117,9 +118,15 @@ const EventScreen = () => {
       >
         <Text>Event {eventId}</Text>
         <Text style={[UIStyles.titleText, { fontWeight: 'bold', color: "black" }]}>{event.name}</Text>
-        {tags.map((tag) => (
+        {/* {tags.map((label) => (
           <Text>{tag}</Text>
-        ))}
+        ))} */}
+
+        <Text>Tags using wrong data strcuture</Text>
+
+
+
+        
         <Text>Created by {event.creator}</Text>
         <Text>{event.description}</Text>
         <Text>Location: {event.location}</Text>
