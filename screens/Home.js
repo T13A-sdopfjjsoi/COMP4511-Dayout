@@ -12,7 +12,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await StoreService.assignActive();
+      const user = await StoreService.getActive();
       setUser(user);
     };
 
@@ -52,8 +52,8 @@ const Home = () => {
         </View>
       ) : (
         <View style={UIStyles.header}>
-          <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome!</Text>
-          <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>User's name goes here!</Text>
+          <Text style={[UIStyles.titleText, { fontWeight: 'bold' }]}>Welcome back</Text>
+          <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>{user.username}</Text>
         </View>
       )}
 

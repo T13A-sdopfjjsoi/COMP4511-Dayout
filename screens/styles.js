@@ -22,6 +22,13 @@ const UIStyles = {
     flexDirection: "row",
     alignItems: "center",
   },
+
+  loginSignUp: {
+    justifyContent:"space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    padding:50,
+  },
   button: {
     marginRight: 10,
   },

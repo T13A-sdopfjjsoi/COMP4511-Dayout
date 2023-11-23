@@ -65,7 +65,7 @@ const EventCreate = () => {
     const showAlert = () => {
       Alert.alert(
         'Invalid Inputs',
-        'Events must contain at least a name, start time and image!',
+        'Events must contain at least a name, valid date and image!',
         [
           { text: 'OK' },
         ],
@@ -84,7 +84,7 @@ const EventCreate = () => {
       image,
       description,
       location,
-      date,
+      date: date.getTime(),
       start_time: startTime,
       end_time: endTime,
       tags: tags,
@@ -100,7 +100,7 @@ const EventCreate = () => {
   const navigateToEventTags = () => {
     navigation.navigate("EventTags");
   };
-
+  
   return (
     <View
       style={{
@@ -108,6 +108,7 @@ const EventCreate = () => {
         justifyContent: "center",
         margin: "10%",
       }}>
+
       <Back/>
       <View style={{ alignItems: "center" }}>
         <Text>Create Event</Text>
