@@ -49,7 +49,7 @@ const EventCreate = () => {
     const showAlert = () => {
       Alert.alert(
         'Invalid Inputs',
-        'Events must contain at least a name, date and image!',
+        'Events must contain at least a name, start time and image!',
         [
           { text: 'OK' },
         ],
@@ -57,24 +57,26 @@ const EventCreate = () => {
       );
     }
 
-    if (!(name && date && image)) {
+    if (!(name && startTime && image)) {
       showAlert()
       return;
     }
 
+    const startDate = Date.parse(`${date} ${startTime.slice(0, 2) + ":" + startTime.slice(2)}`, "dd-MM-yyyy HH:mm");
+    const endDate = Date.parse(`${date} ${endTime.slice(0, 2) + ":" + endTime.slice(2)}`, "dd-MM-yyyy HH:mm");
     const newEvent = await StoreService.addEvent({
       creator: user.username,
       name,
       image,
       description,
       location,
-      start_time: startTime,
       date,
-      end_time: startTime,
+      start_time: startDate,
+      end_time: endDate,
       tags: tags,
       users_going: [],
       users_interested: [],
-      rating: "0.0",
+      rating: [],
       comments: [],
     });
     console.log(newEvent);
@@ -141,7 +143,7 @@ const EventCreate = () => {
             borderColor: "black",
             borderRadius: 25,
           }}
-          label='Event Date'
+          label='Event Date (enter as dd/mm/yyyy)'
           value={date}
           onChangeText={(date) => setDate(date)}
         />
@@ -153,7 +155,7 @@ const EventCreate = () => {
             borderColor: "black",
             borderRadius: 25,
           }}
-          label='Event Start Time'
+          label='Event Start Time (24 hour time)'
           value={startTime}
           onChangeText={(startTime) => setStartTime(startTime)}
         />
@@ -165,7 +167,7 @@ const EventCreate = () => {
             borderColor: "black",
             borderRadius: 25,
           }}
-          label='Event End Time'
+          label='Event End Time (24 hour time)'
           value={endTime}
           onChangeText={(endTime) => setEndTime(endTime)}
         />
