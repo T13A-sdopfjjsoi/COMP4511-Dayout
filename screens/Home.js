@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import UIStyles from "./styles.js";
 import DashGrid from "./Components/DashGrid.js";
+import StoreService from "../services/StoreService.js";
 
 const Home = () => {
-  const user = false;
+  const [user, setUser] = useState('')
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await StoreService.assignActive();
+      setUser(user);
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -46,6 +56,7 @@ const Home = () => {
           <Text style={[UIStyles.titleText, { textDecorationLine: 'underline' }]}>User's name goes here!</Text>
         </View>
       )}
+
       <View style={UIStyles.dashContent}>
         <DashGrid />
       </View>
