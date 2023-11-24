@@ -2,7 +2,7 @@
 const UIStyles = {
   backButton: {
     position: "absolute",
-    top: 10,
+    top: 40,
   },
   titleText: {
     fontSize: 30,

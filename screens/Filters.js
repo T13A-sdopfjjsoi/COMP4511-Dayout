@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Checkbox } from 'react-native-paper';
+import { Button, Checkbox, IconButton } from 'react-native-paper';
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
 import Dropdown from 'react-native-input-select';
@@ -141,8 +141,10 @@ const FiltersScreen = () => {
 
   return (
     <View style={{margin:20, marginTop:80}}>
-      <Text style={UIStyles.blackTitleText}>Filters</Text>
-      <Button onPress={() => navigation.navigate('Search', { filters: {...filters, ...getTimestamp()}})}>Close</Button>
+      <View style={{flexDirection:"row", justifyContent:"space-between", width:"100%"}}>
+        <Text style={UIStyles.blackTitleText}>Filters</Text>
+        <IconButton icon="close" onPress={() => navigation.navigate('Search', { filters: {...filters, ...getTimestamp()}})} />
+      </View>
       <ScrollView>
       <Text style={{fontSize:25, margin:5}}>Period</Text>
       <View style={{ flexDirection: 'row', alignItems: 'top', width: '50%' }}>
@@ -177,7 +179,26 @@ const FiltersScreen = () => {
           </View>
         )}
       </View>
+      <View style={{justifyContent:"space-between", flexDirection:"row", width:"100%" }}>
+
       <Text style={{fontSize:25}}>Tags</Text>
+        <Text style={{fontWeight:"bold"}}>
+        {(() => {
+          let count = 0;
+          if (filters.tags) {
+            Object.keys(filters.tags).forEach((key) => {
+              count += filters.tags[key].length;
+            });
+            if (count === 1) {
+              return count + " tag applied";
+            }
+            return count + " tags applied";
+          } else {
+            return "No tags applied";
+          }
+        })()}
+        </Text>
+        </View>
               
       {collapsibles.map((collapsible) => (
         <View style={{paddingLeft:10, marginBottom: 5}} key={collapsible.label}>

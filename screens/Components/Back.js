@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Button } from 'react-native';
+import { View } from 'react-native';
+import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import UIStyles from "../styles.js";
 
@@ -12,7 +13,7 @@ const DetailsScreen = () => {
 
   return (
     <View style={UIStyles.backButton}>
-      <Button title="Back" onPress={handleGoBack} />
+      <Button buttonColor="#63519f" textColor="white" onPress={handleGoBack}>Back</Button>
     </View>
   );
 };

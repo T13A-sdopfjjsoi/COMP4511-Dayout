@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { ScrollView, View, Image, TouchableOpacity } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Button, Card, Text, Title, Paragraph } from "react-native-paper";
@@ -16,35 +16,31 @@ const DashGrid = () => {
   const [joined, setJoined] = useState([]);
   const [user, setUser] = useState("");
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const user = await StoreService.getActive();
-  //     setUser(user);
-
-  //     await getStoredEvents();
-  //   };
-  //   fetchUser();
-  // }, []);
-
   useFocusEffect(
     useCallback(() => {
       const fetchUser = async () => {
-        const user = await StoreService.getActive();
-        setUser(user);
-
-        await getStoredEvents();
+        await getStored();
       };
       fetchUser();
     }, [])
   );
 
-  const getStoredEvents = async () => {
+  const getStored = async () => {
     const storedEvents = await StoreService.getEvents();
+    const user = await StoreService.getActive();
+    setUser(user);
     setStoredEvents(storedEvents);
+
     //https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-    setInterested(storedEvents.sort((a, b) => 0.5 - Math.random()));
-    setShuffled(storedEvents.sort((a, b) => 0.5 - Math.random()));
-    setJoined(storedEvents.sort((a, b) => 0.5 - Math.random()));
+    if (user.username) {
+      setInterested(storedEvents.filter((event) => event["users_interested"].includes(user.username)));
+      setJoined(storedEvents.filter((event) => event["users_going"].includes(user.username)));
+    } else {
+      setInterested(storedEvents)
+      setJoined(storedEvents)
+    }
+    setShuffled(storedEvents.filter((a, b) => 0.5 - Math.random()));
+
     return storedEvents;
   };
 

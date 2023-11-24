@@ -5,6 +5,7 @@ import { Button } from "react-native-paper"
 import { useRoute, useNavigation } from '@react-navigation/native';
 import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService";
+import LoadImage from './Images/LoadImage.jpg';
 
 const EventScreen = () => {
   const navigation = useNavigation();
@@ -67,6 +68,7 @@ const EventScreen = () => {
       return;
     }
 
+
     if (!event.users_going.includes(user.username)) {
       let newGoingList = event.users_going;
       newGoingList.push(user.username);
@@ -74,6 +76,7 @@ const EventScreen = () => {
         ...event,
         users_going: newGoingList
       }));
+
       updateEvent();
     }
   }
@@ -123,9 +126,7 @@ const EventScreen = () => {
       }}>
       <Image
         style={{width: Dimensions.get('window').width, height: 150, left: "-5%"}}
-        source={{
-          uri: event.image === undefined ? "" : event.image,
-        }}
+        source={event.image === undefined ? { LoadImage } : { uri: event.image }}
       />
       <Back />
       <View
@@ -141,23 +142,26 @@ const EventScreen = () => {
         <Text>Interested: {event.users_interested?.length}</Text>
         <Text style={{textAlign: "right"}}>Starts in {getDays()} days</Text>
         <Text style={{textAlign: "right"}}>{startTime} - {endTime}</Text>
-        <Text style={{textAlign: "right"}}>{event.location}</Text><br/>
+        <Text style={{textAlign: "right"}}>{event.location}</Text>
+        <Text>{'\n'}</Text>
         <View
           style={{
             borderBottomColor: 'black',
             borderBottomWidth: 1,
           }}
-        /> <br/>
+        /> 
+        <Text>{'\n'}</Text>
 
         <View style={{flexDirection: 'row'}}>
           {tags.map((tag) => (
             tag.map((itag) => (
-              <Button style={{marginRight:5}} buttonColor="#9474f1" textColor="white"
+              <Button key={itag} style={{marginRight:5}} buttonColor="#9474f1" textColor="white"
               onPress={() => navigation.navigate('Search')}
             >{itag}</Button>
             ))
           ))}
-        </View> <br/>
+        </View> 
+        <Text>{'\n'}</Text>
         <Text style={{fontSize: 20}}>{event.description}</Text>
         {event.users_going.includes(user.username) &&
             <Button disabled="true">Already Joined</Button>
