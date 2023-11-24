@@ -54,8 +54,8 @@ const AllGroupView = ({ route, navigation, navigation: { goBack } }) => {
           <TouchableOpacity onPress={() => goBack()}>
             <MaterialCommunityIcons name='home' size={30} />
           </TouchableOpacity>
-          <Button onPress={() => removegroups()}>Remove Groups</Button>
-          <Button onPress={() => seeallgroups()}>All Groups</Button>
+          {/* <Button onPress={() => removegroups()}>Remove Groups</Button>
+          <Button onPress={() => seeallgroups()}>All Groups</Button> */}
         </View>
         <View style={{ alignItems: "center", margin: 10 }}>
           <Text

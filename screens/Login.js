@@ -59,9 +59,9 @@ const Login = ({ navigation, navigation: { goBack } }) => {
             <TouchableOpacity onPress={() => goBack()}>
               <MaterialCommunityIcons name='home' size={30} />
             </TouchableOpacity>
-            <Button onPress={() => clearAsyncStorage()}>
+            {/* <Button onPress={() => clearAsyncStorage()}>
               <Text>Clear Async Storage</Text>
-            </Button>
+            </Button> */}
           </View>
           <View>
             <LoginWarning visible={visible} hideDialog={hideDialog} />
