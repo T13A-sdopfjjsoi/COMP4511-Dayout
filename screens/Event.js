@@ -103,6 +103,22 @@ const EventScreen = () => {
     setPageReload(pageReload + 1);
   };
 
+  const goingButton = () => {
+    if (event.users_going?.includes(getUser().username)) {
+      return (
+        <Button>GOING ALREADY</Button>
+      )
+    } else {
+      return (
+        <Button>NOT GOING ALREADY</Button>
+      )
+    }
+  }
+
+  if (Object.keys(event).length === 0) {
+    return null;
+  }
+
   return (
     <View
       style={{
@@ -147,9 +163,21 @@ const EventScreen = () => {
         </View> 
         <Text>{'\n'}</Text>
         <Text style={{fontSize: 20}}>{event.description}</Text>
+        {event.users_going.includes(user.username) &&
+            <Button disabled="true">Already Joined</Button>
+        }
+        {event.users_interested.includes(user.username) &&
+          <Button disabled="true">Already Interested</Button>
+        }
 
-        <Button onPress={() => joinEvent()}>Join Event</Button>
-        <Button onPress={() => addEventInterested()}>Interested</Button>
+        {!event.users_going.includes(user.username) &&
+          <Button onPress={() => joinEvent()}>Join Event</Button>
+        }
+
+        {!event.users_interested.includes(user.username) &&
+          <Button onPress={() => addEventInterested()}>Interested</Button>
+        }
+
       </View>
     </View>
   );
