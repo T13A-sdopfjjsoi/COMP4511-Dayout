@@ -107,7 +107,7 @@ const DashGrid = () => {
         }}>
         <TouchableOpacity
           style={{ width: "48%", alignItems: "center" }}
-          onPress={() => navigation.navigate("Search")}>
+          onPress={() => navigation.navigate("Profile")}>
           <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
             Interested
           </Text>
@@ -143,7 +143,7 @@ const DashGrid = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ width: "48%", alignItems: "center" }}
-          onPress={() => navigation.navigate("Search")}>
+          onPress={() => navigation.navigate("Profile")}>
           <Text style={{ fontWeight: "bold", marginBottom: 5 }}>Joined</Text>
           <View style={UIStyles.stack}>
             {(() => {
