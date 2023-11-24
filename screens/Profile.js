@@ -12,6 +12,8 @@ const Profile = () => {
   const [user, setUser] = useState("");
   const [events, setEvents] = useState([]);
   const [joined, setJoined] = useState([]);
+  const [interested, setinterested] = useState([]);
+
 
   const fetchevents = async () => {
     if (user?.username) {
@@ -20,6 +22,11 @@ const Profile = () => {
       setJoined(
         storedEvents.filter((event) =>
           event["users_going"].includes(user.username)
+        )
+      );
+      setinterested(
+        storedEvents.filter((event) =>
+          event["users_interested"].includes(user.username)
         )
       );
     }
@@ -65,7 +72,7 @@ const Profile = () => {
           <LoginSignup />
         </View>
       ) : (
-        <>
+        <ScrollView>
           <View
             style={{
               flexDirection: "row",
@@ -163,8 +170,39 @@ const Profile = () => {
                 </TouchableOpacity>
               ))}
             </ScrollView>
+            <Text style={{ fontWeight: "bold" }}>Interested Events</Text>
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
+              {interested.map((event) => (
+                <TouchableOpacity
+                  key={event.id}
+                  onPress={() =>
+                    navigation.navigate("Event", { eventId: event.id })
+                  }>
+                  <Card
+                    style={{ width: 120, height: 180, margin: 5 }}
+                    onPress={() =>
+                      navigation.navigate("Event", { eventId: event.id })
+                    }>
+                    <Card.Cover
+                      style={{ height: 110 }}
+                      source={{ uri: event.image }}
+                    />
+                    <Card.Content>
+                      <Title numberOfLines={1} style={{ fontSize: 14 }}>
+                        {event.name}
+                      </Title>
+                      <Paragraph numberOfLines={1} style={{ fontSize: 12 }}>
+                        {format(new Date(event.date), "do/MMM")}
+                      </Paragraph>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
-        </>
+        </ScrollView>
       )}
     </View>
   );
