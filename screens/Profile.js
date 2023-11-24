@@ -14,9 +14,15 @@ const Profile = () => {
   const [joined, setJoined] = useState([]);
 
   const fetchevents = async () => {
-    user?.username &&
+    if (user?.username) {
       setEvents(await StoreService.getUsersEvents(user.username));
-      setJoined(storedEvents.filter((event) => event["users_going"].includes(user.username)));
+      const storedEvents = await StoreService.getEvents();
+      setJoined(
+        storedEvents.filter((event) =>
+          event["users_going"].includes(user.username)
+        )
+      );
+    }
   };
 
   useFocusEffect(
@@ -60,97 +66,103 @@ const Profile = () => {
         </View>
       ) : (
         <>
-          <View style={{flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
-          <Text style={UIStyles.blackTitleText}>{user.username}'s Profile</Text>
-          <Button
-            mode='contained'
-            title='Create Event'
-            buttonColor='red'
-            onPress={() => {
-              StoreService.removeActive();
-
-              reload();
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}>
-            Log Out
-          </Button>
+            <Text style={UIStyles.blackTitleText}>
+              {user.username}'s Profile
+            </Text>
+            <Button
+              mode='contained'
+              title='Create Event'
+              buttonColor='red'
+              onPress={() => {
+                StoreService.removeActive();
+                reload();
+              }}>
+              Log Out
+            </Button>
           </View>
           <View>
-          <Text style={{ fontWeight: "bold" }}>Your Events</Text>
-          <ScrollView
-            horizontal={true}
-            contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-            <TouchableOpacity
-              key={"create"}
-              onPress={() => {
-                navigation.navigate("EventCreate");
-              }}>
-              <Card style={{ width: 120, height: 180, margin: 5 }}>
-                <Card.Content style={{ alignItems: "center" }}>
-                  <Title numberOfLines={1} style={{ fontSize: 14 }}>
-                    Create Event
-                  </Title>
-                  <IconButton icon='plus' />
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-            {events.map((event) => (
+            <Text style={{ fontWeight: "bold" }}>Your Events</Text>
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
               <TouchableOpacity
-                key={event.id}
-                onPress={() =>
-                  navigation.navigate("Event", { eventId: event.id })
-                }>
-                <Card
-                  style={{ width: 120, height: 180, margin: 5 }}
-                  onPress={() =>
-                    navigation.navigate("Event", { eventId: event.id })
-                  }>
-                  <Card.Cover
-                    style={{ height: 110 }}
-                    source={{ uri: event.image }}
-                  />
-                  <Card.Content>
+                key={"create"}
+                onPress={() => {
+                  navigation.navigate("EventCreate");
+                }}>
+                <Card style={{ width: 120, height: 180, margin: 5 }}>
+                  <Card.Content style={{ alignItems: "center" }}>
                     <Title numberOfLines={1} style={{ fontSize: 14 }}>
-                      {event.name}
+                      Create Event
                     </Title>
-                    <Paragraph numberOfLines={1} style={{ fontSize: 12 }}>
-                      {format(new Date(event.date), "do/MMM")}
-                    </Paragraph>
+                    <IconButton icon='plus' />
                   </Card.Content>
                 </Card>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <Text style={{ fontWeight: "bold" }}>Joined Events</Text>
-          <ScrollView
-            horizontal={true}
-            contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-            {events.map((event) => (
-              <TouchableOpacity
-                key={event.id}
-                onPress={() =>
-                  navigation.navigate("Event", { eventId: event.id })
-                }>
-                <Card
-                  style={{ width: 120, height: 180, margin: 5 }}
+              {events.map((event) => (
+                <TouchableOpacity
+                  key={event.id}
                   onPress={() =>
                     navigation.navigate("Event", { eventId: event.id })
                   }>
-                  <Card.Cover
-                    style={{ height: 110 }}
-                    source={{ uri: event.image }}
-                  />
-                  <Card.Content>
-                    <Title numberOfLines={1} style={{ fontSize: 14 }}>
-                      {event.name}
-                    </Title>
-                    <Paragraph numberOfLines={1} style={{ fontSize: 12 }}>
-                      {format(new Date(event.date), "do/MMM")}
-                    </Paragraph>
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+                  <Card
+                    style={{ width: 120, height: 180, margin: 5 }}
+                    onPress={() =>
+                      navigation.navigate("Event", { eventId: event.id })
+                    }>
+                    <Card.Cover
+                      style={{ height: 110 }}
+                      source={{ uri: event.image }}
+                    />
+                    <Card.Content>
+                      <Title numberOfLines={1} style={{ fontSize: 14 }}>
+                        {event.name}
+                      </Title>
+                      <Paragraph numberOfLines={1} style={{ fontSize: 12 }}>
+                        {format(new Date(event.date), "do/MMM")}
+                      </Paragraph>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <Text style={{ fontWeight: "bold" }}>Joined Events</Text>
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
+              {joined.map((event) => (
+                <TouchableOpacity
+                  key={event.id}
+                  onPress={() =>
+                    navigation.navigate("Event", { eventId: event.id })
+                  }>
+                  <Card
+                    style={{ width: 120, height: 180, margin: 5 }}
+                    onPress={() =>
+                      navigation.navigate("Event", { eventId: event.id })
+                    }>
+                    <Card.Cover
+                      style={{ height: 110 }}
+                      source={{ uri: event.image }}
+                    />
+                    <Card.Content>
+                      <Title numberOfLines={1} style={{ fontSize: 14 }}>
+                        {event.name}
+                      </Title>
+                      <Paragraph numberOfLines={1} style={{ fontSize: 12 }}>
+                        {format(new Date(event.date), "do/MMM")}
+                      </Paragraph>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
         </>
       )}
