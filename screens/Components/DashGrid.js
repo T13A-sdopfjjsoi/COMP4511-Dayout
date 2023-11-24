@@ -32,12 +32,20 @@ const DashGrid = () => {
     setStoredEvents(storedEvents);
 
     //https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
-    if (user.username) {
-      setInterested(storedEvents.filter((event) => event["users_interested"].includes(user.username)));
-      setJoined(storedEvents.filter((event) => event["users_going"].includes(user.username)));
+    if (user?.username) {
+      setInterested(
+        storedEvents.filter((event) =>
+          event["users_interested"].includes(user.username)
+        )
+      );
+      setJoined(
+        storedEvents.filter((event) =>
+          event["users_going"].includes(user.username)
+        )
+      );
     } else {
-      setInterested(storedEvents)
-      setJoined(storedEvents)
+      setInterested(storedEvents);
+      setJoined(storedEvents);
     }
     setShuffled(storedEvents.filter((a, b) => 0.5 - Math.random()));
 
