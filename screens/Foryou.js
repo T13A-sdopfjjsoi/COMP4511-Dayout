@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, Image, Dimensions, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import StoreService from '../services/StoreService';
+import { useFocusEffect } from '@react-navigation/native';
 import UIStyles from "./styles.js";
 
 const Foryou = () => {
@@ -13,10 +14,17 @@ const Foryou = () => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
+  useFocusEffect(
+    useCallback(() => {
+      getUser();
+      getStoredEvents();
+      setCurrentEventIndex(0);
+    }, [])
+  );
+
   useEffect(() => {
     getUser();
     getStoredEvents();
-    setCurrentEvent({});
     setCurrentEventIndex(0);
   }, []);
 
@@ -63,12 +71,7 @@ const Foryou = () => {
   }
 
   const updateInterestedStatus = async () => {
-    const event = await StoreService.updateEvent(currentEvent.id, currentEvent);
-    if (event !== null) {
-      setEvent(event);
-    } else {
-      return null;
-    }
+    await StoreService.updateEvent(currentEvent.id, currentEvent);
   };
 
   const addEventInterested = () => {
