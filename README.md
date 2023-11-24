@@ -13,8 +13,8 @@ Here is list of components in this project and the progress.
 | Component      | Description                                                              | Finished? | Issue                           |
 | -------------- | ------------------------------------------------------------------------ | --------- | ------------------------------- |
 | Authentication | Login/Signup                                                             | YES       | N/A                             |
-| Home           | Hub of the application, users can find events here.                      | NO        |
-| Search         | Show list of events available and filter events.                         | NO        |
-| For you        | Recommend events to users based on their interests.                      | NO        |
+| Home           | Hub of the application, users can find events here.                      | YES       |                                 | 
+| Search         | Show list of events available and filter events.                         | YES       |                                 |
+| For you        | Recommend events to users based on their interests.                      | Partial   | Recommendation not implement    |
 | Social         | Includes Groups and friends to allow users to to be part of a community. | Partial   | Invitations are not implemented |
-| Profile        | User profile and create event.                                           | NO        |                                 |
+| Profile        | User profile and create event.                                           | YES       |                                 |
