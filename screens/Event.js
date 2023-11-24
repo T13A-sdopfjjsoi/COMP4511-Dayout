@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, Dimensions } from "react-native";
 import Back from "./Components/Back"
 import { Button } from "react-native-paper"
-import { useRoute, useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import UIStyles from "./styles.js";
 import StoreService from "../services/StoreService";
 
