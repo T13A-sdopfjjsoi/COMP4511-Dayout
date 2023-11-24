@@ -136,7 +136,7 @@ const Profile = () => {
             <ScrollView
               horizontal={true}
               contentContainerStyle={{ flexGrow: 1, marginBottom: 10 }}>
-              {events.map((event) => (
+              {joined.map((event) => (
                 <TouchableOpacity
                   key={event.id}
                   onPress={() =>
