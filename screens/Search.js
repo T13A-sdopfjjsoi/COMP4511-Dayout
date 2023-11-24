@@ -23,13 +23,22 @@ const Search = () => {
     useCallback(() => {
       const fetchEvents = async () => {
         const events = await StoreService.getEvents();
-        setEvents(events);
+        setEvents(events)
       };
   
       fetchEvents();
     }, [])
   );
-  
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const events = await StoreService.getEvents();
+      setShowEvents(events)
+    };
+
+    fetchEvents();
+  },[])
+      
   useEffect(() => {  
     setFilters(routeFilters ? routeFilters : { start_time: new Date().getTime() });
     setSearchQuery(routeSearch ? routeSearch : '');
